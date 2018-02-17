@@ -1,25 +1,37 @@
-package ua.gwm.sponge_plugin.library.utils;
+package ua.gwm.sponge_plugin.library;
 
+import de.randombyte.holograms.api.HologramsService;
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
+import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import ua.gwm.sponge_plugin.library.utils.Config;
+import ua.gwm.sponge_plugin.library.utils.Language;
+import ua.gwm.sponge_plugin.library.utils.SpongePlugin;
+import ua.gwm.sponge_plugin.library.utils.Version;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.Optional;
 
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "1.0",
+        version = "1.1",
         description = "Necessary library to run plugins developed by GWM!",
+        dependencies = {
+                @Dependency(id = "holograms", optional = true)
+        },
         authors = {"GWM"/*
                          * Nazar Kalinovskiy
                          * My contacts:
@@ -27,7 +39,7 @@ import java.io.File;
                          * Discord(GWM#2192)*/})
 public class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 1, 0);
+    public static final Version VERSION = new Version(null, 1, 1);
 
     private static GWMLibrary instance = null;
 
@@ -55,6 +67,8 @@ public class GWMLibrary extends SpongePlugin {
 
     private Language language;
 
+    private Optional<HologramsService> holograms_service = Optional.empty();
+
     private boolean check_updates = true;
 
     @Listener
@@ -63,7 +77,7 @@ public class GWMLibrary extends SpongePlugin {
     }
 
     @Listener
-    public void onPreInit(GamePreInitializationEvent event) {
+    public void onPreInitialization(GamePreInitializationEvent event) {
         if (!config_directory.exists()) {
             config_directory.mkdirs();
         }
@@ -79,15 +93,21 @@ public class GWMLibrary extends SpongePlugin {
     }
 
     @Listener
+    public void onPostInitialization(GamePostInitializationEvent event) {
+        loadHologramsService();
+        logger.info("\"GamePostInitializationEvent\" completed!");
+    }
+
+    @Listener
     public void onStopping(GameStoppingServerEvent event) {
         save();
-        logger.info("\"GameStopping\" complete!");
+        logger.info("\"GameStopping\" completed!");
     }
 
     @Listener
     public void reloadListener(GameReloadEvent event) {
         reload();
-        logger.info("\"GameReload\" complete!");
+        logger.info("\"GameReload\" completed!");
     }
 
     @Override
@@ -103,6 +123,8 @@ public class GWMLibrary extends SpongePlugin {
         language_config.reload();
         loadConfigValues();
         cause = Cause.of(EventContext.empty(), container);
+        holograms_service = Optional.empty();
+        loadHologramsService();
         if (check_updates) {
             checkUpdates();
         }
@@ -111,6 +133,23 @@ public class GWMLibrary extends SpongePlugin {
 
     private void loadConfigValues() {
         check_updates = config.getNode("CHECK_UPDATES").getBoolean(true);
+    }
+
+    private boolean loadHologramsService() {
+        try {
+            holograms_service = Sponge.getServiceManager().provide(HologramsService.class);
+            if (holograms_service.isPresent()) {
+                logger.info("Holograms Service found!");
+                return true;
+            }
+        } catch (NoClassDefFoundError ignored) {}
+        logger.warn("Holograms Service does not found!");
+        logger.info("Please install \"Holograms\" plugin (https://ore.spongepowered.org/RandomByte/Holograms) if you want use holograms!");
+        return false;
+    }
+
+    public Optional<HologramsService> getHologramsService() {
+        return holograms_service;
     }
 
     @Override
