@@ -8,13 +8,11 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.game.GameReloadEvent;
-import org.spongepowered.api.event.game.state.GameConstructionEvent;
-import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
+import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import ua.gwm.sponge_plugin.library.command.GWMLibraryCommand;
 import ua.gwm.sponge_plugin.library.utils.Config;
 import ua.gwm.sponge_plugin.library.utils.Language;
 import ua.gwm.sponge_plugin.library.utils.SpongePlugin;
@@ -27,7 +25,7 @@ import java.util.Optional;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "1.1",
+        version = "1.2",
         description = "Necessary library to run plugins developed by GWM!",
         dependencies = {
                 @Dependency(id = "holograms", optional = true)
@@ -39,7 +37,7 @@ import java.util.Optional;
                          * Discord(GWM#2192)*/})
 public class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 1, 1);
+    public static final Version VERSION = new Version(null, 1, 2);
 
     private static GWMLibrary instance = null;
 
@@ -89,13 +87,19 @@ public class GWMLibrary extends SpongePlugin {
         if (check_updates) {
             checkUpdates();
         }
-        logger.info("\"GamePreInitializationEvent\" completed!");
+        logger.info("\"GamePreInitialization\" completed!");
+    }
+
+    @Listener
+    public void onInitialization(GameInitializationEvent event) {
+        Sponge.getCommandManager().register(this, new GWMLibraryCommand(), "gwmlibrary");
+        logger.info("\"GameInitialization\" completed!");
     }
 
     @Listener
     public void onPostInitialization(GamePostInitializationEvent event) {
         loadHologramsService();
-        logger.info("\"GamePostInitializationEvent\" completed!");
+        logger.info("\"GamePostInitialization\" completed!");
     }
 
     @Listener
