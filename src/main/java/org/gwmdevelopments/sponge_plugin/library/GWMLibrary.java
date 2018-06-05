@@ -1,4 +1,4 @@
-package ua.gwm.sponge_plugin.library;
+package org.gwmdevelopments.sponge_plugin.library;
 
 import de.randombyte.holograms.api.HologramsService;
 import org.slf4j.Logger;
@@ -12,11 +12,11 @@ import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import ua.gwm.sponge_plugin.library.command.GWMLibraryCommand;
-import ua.gwm.sponge_plugin.library.utils.Config;
-import ua.gwm.sponge_plugin.library.utils.Language;
-import ua.gwm.sponge_plugin.library.utils.SpongePlugin;
-import ua.gwm.sponge_plugin.library.utils.Version;
+import org.gwmdevelopments.sponge_plugin.library.command.GWMLibraryCommand;
+import org.gwmdevelopments.sponge_plugin.library.utils.Config;
+import org.gwmdevelopments.sponge_plugin.library.utils.Language;
+import org.gwmdevelopments.sponge_plugin.library.utils.SpongePlugin;
+import org.gwmdevelopments.sponge_plugin.library.utils.Version;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "1.2",
+        version = "1.3",
         description = "Necessary library to run plugins developed by GWM!",
         dependencies = {
                 @Dependency(id = "holograms", optional = true)
@@ -37,7 +37,7 @@ import java.util.Optional;
                          * Discord(GWM#2192)*/})
 public class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 1, 2);
+    public static final Version VERSION = new Version(null, 1, 3);
 
     private static GWMLibrary instance = null;
 

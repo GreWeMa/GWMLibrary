@@ -1,4 +1,4 @@
-package ua.gwm.sponge_plugin.library.utils;
+package org.gwmdevelopments.sponge_plugin.library.utils;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
@@ -9,7 +9,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import ua.gwm.sponge_plugin.library.GWMLibrary;
+import org.gwmdevelopments.sponge_plugin.library.GWMLibrary;
 
 import java.util.List;
 import java.util.Optional;

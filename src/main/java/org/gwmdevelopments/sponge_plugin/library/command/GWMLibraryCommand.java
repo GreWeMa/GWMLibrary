@@ -1,4 +1,4 @@
-package ua.gwm.sponge_plugin.library.command;
+package org.gwmdevelopments.sponge_plugin.library.command;
 
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.command.CommandCallable;
@@ -11,8 +11,8 @@ import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import ua.gwm.sponge_plugin.library.GWMLibrary;
-import ua.gwm.sponge_plugin.library.utils.Pair;
+import org.gwmdevelopments.sponge_plugin.library.GWMLibrary;
+import org.gwmdevelopments.sponge_plugin.library.utils.Pair;
 
 import javax.annotation.Nullable;
 import java.util.Collections;

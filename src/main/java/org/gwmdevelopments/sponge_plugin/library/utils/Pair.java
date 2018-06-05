@@ -1,4 +1,4 @@
-package ua.gwm.sponge_plugin.library.utils;
+package org.gwmdevelopments.sponge_plugin.library.utils;
 
 import java.util.Map;
 

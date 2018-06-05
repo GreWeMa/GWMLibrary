@@ -1,4 +1,4 @@
-package ua.gwm.sponge_plugin.library.utils;
+package org.gwmdevelopments.sponge_plugin.library.utils;
 
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -8,9 +8,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.asset.AssetManager;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
