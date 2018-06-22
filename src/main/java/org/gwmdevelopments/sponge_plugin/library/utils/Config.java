@@ -32,10 +32,10 @@ public class Config {
         try {
             file = new File(plugin.getConfigDirectory(), name);
             if (!file.exists()) {
-                AssetManager asset_manager = Sponge.getAssetManager();
-                Optional<Asset> optional_asset = asset_manager.getAsset(plugin, name);
-                if (optional_asset.isPresent()) {
-                    Asset asset = optional_asset.get();
+                AssetManager assetManager = Sponge.getAssetManager();
+                Optional<Asset> optionalAsset = assetManager.getAsset(plugin, name);
+                if (optionalAsset.isPresent()) {
+                    Asset asset = optionalAsset.get();
                     asset.copyToFile(file.toPath());
                 } else {
                     plugin.getLogger().warn("Asset \"" + name + "\" not found!");

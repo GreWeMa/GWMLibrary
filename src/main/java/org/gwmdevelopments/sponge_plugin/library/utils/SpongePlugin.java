@@ -18,12 +18,12 @@ public abstract class SpongePlugin {
             try {
                 InputStreamReader reader = new InputStreamReader(new URL("https://ore.spongepowered.org/api/projects/" + getContainer().getId()).openStream());
                 JsonObject object = new Gson().fromJson(reader, JsonObject.class);
-                Version ore_version = Version.parse(object.get("recommended").getAsJsonObject().get("name").getAsJsonPrimitive().getAsString());
-                if (ore_version.compareTo(getVersion()) > 0) {
-                    getLogger().warn("New version (" + ore_version.toString() + ") available on Ore!");
+                Version oreVersion = Version.parse(object.get("recommended").getAsJsonObject().get("name").getAsJsonPrimitive().getAsString());
+                if (oreVersion.compareTo(getVersion()) > 0) {
+                    getLogger().warn("New version (" + oreVersion.toString() + ") available on Ore!");
                 }
             } catch (Exception e) {
-                getLogger().warn("Exception checking plugin updates on Ore!", e);
+                getLogger().warn("Failed to check plugin updates on Ore!", e);
             }
         }).submit(this);
     }

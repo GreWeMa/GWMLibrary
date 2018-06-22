@@ -48,12 +48,16 @@ public class Version implements Comparable<Version> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Version version = (Version) o;
-
-        if (prefix != null ? !prefix.equals(version.prefix) : version.prefix != null) return false;
+        if (prefix != null ? !prefix.equals(version.prefix) : version.prefix != null) {
+            return false;
+        }
         return Arrays.equals(array, version.array);
     }
 

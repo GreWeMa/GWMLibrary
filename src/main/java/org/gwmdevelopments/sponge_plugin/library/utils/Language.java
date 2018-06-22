@@ -33,7 +33,7 @@ public class Language {
             }
             return phrase;
         } catch (Exception e) {
-            plugin.getLogger().warn("Fail getting phrase \"" + path + "\" from language config!", e);
+            plugin.getLogger().warn("Failed to get phrase \"" + path + "\" from language config!", e);
             return DEFAULT.replace("%PATH%", path);
         }
     }
@@ -42,7 +42,7 @@ public class Language {
         try {
             return TextSerializers.FORMATTING_CODE.deserialize(getPhrase(path, pairs));
         } catch (Exception e) {
-            plugin.getLogger().warn("Fail getting text \"" + path + "\" from language config!", e);
+            plugin.getLogger().warn("Failed to get text \"" + path + "\" from language config!", e);
             return Text.builder(DEFAULT.replace("%PATH%", path)).color(TextColors.RED).build();
         }
     }
@@ -60,7 +60,7 @@ public class Language {
             }
             return list;
         } catch (Exception e) {
-            plugin.getLogger().warn("Failed on getting phrase list \"" + path + "\" from language config!", e);
+            plugin.getLogger().warn("Failed to get phrase list \"" + path + "\" from language config!", e);
             List<String> list = new ArrayList<String>();
             list.add(DEFAULT.replace("%PATH%", path));
             return list;
@@ -73,7 +73,7 @@ public class Language {
                     map(TextSerializers.FORMATTING_CODE::deserialize).
                     collect(Collectors.toList());
         } catch (Exception e) {
-            plugin.getLogger().warn("Failed on getting text list \"" + path + "\" from language config!", e);
+            plugin.getLogger().warn("Failed to get text list \"" + path + "\" from language config!", e);
             List<Text> list = new ArrayList<Text>();
             list.add(Text.builder(DEFAULT.replace("%PATH%", path)).color(TextColors.RED).build());
             return list;
