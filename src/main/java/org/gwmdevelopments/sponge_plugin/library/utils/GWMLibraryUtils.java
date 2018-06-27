@@ -19,12 +19,13 @@ public class GWMLibraryUtils {
 
     public static final Gson GSON = new Gson();
 
-    public static int getRandomIntLevel(int min, int max) {
+    public static int getRandomIntLevel() {
         Random random = new Random();
-        while (random.nextBoolean() && min < max) {
-            min++;
+        int level = 1;
+        while (random.nextBoolean()) {
+            level++;
         }
-        return min;
+        return level;
     }
 
     public static Vector3i parseVector3i(ConfigurationNode node) {
