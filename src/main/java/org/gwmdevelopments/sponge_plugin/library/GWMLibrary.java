@@ -30,10 +30,9 @@ import java.util.Optional;
         dependencies = {
                 @Dependency(id = "holograms", optional = true)
         },
-        authors = {"GWM"/*
-                         * Nazar Kalinovskiy
-                         * My contacts:
-                         * E-Mail(gwm@tutanota.com),
+        authors = {"GWM"/* My contacts:
+                         * E-Mail(nazark@tutanota.com),
+                         * Telegram(@grewema),
                          * Discord(GWM#2192)*/})
 public class GWMLibrary extends SpongePlugin {
 
