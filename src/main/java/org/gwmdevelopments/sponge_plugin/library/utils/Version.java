@@ -1,12 +1,10 @@
 package org.gwmdevelopments.sponge_plugin.library.utils;
 
-import com.sun.istack.internal.NotNull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class Version implements Comparable<Version> {
 
-    private final @Nullable String prefix;
+    private final String prefix;
     private final int[] array;
 
     public static Version parse(String string) {
@@ -29,13 +27,13 @@ public class Version implements Comparable<Version> {
         }
     }
 
-    public Version(@Nullable String prefix, int... array) {
+    public Version(String prefix, int... array) {
         this.prefix = prefix;
         this.array = array;
     }
 
     @Override
-    public int compareTo(@NotNull Version version) {
+    public int compareTo(Version version) {
         int[] array = version.getArray();
         for (int i = 0; i < this.array.length && i < array.length; i++) {
             int compared = Integer.compare(this.array[i], array[i]);
@@ -83,7 +81,7 @@ public class Version implements Comparable<Version> {
         return builder.toString();
     }
 
-    public @Nullable String getPrefix() {
+    public String getPrefix() {
         return prefix;
     }
 
