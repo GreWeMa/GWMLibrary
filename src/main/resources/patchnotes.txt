@@ -1,2 +1,2 @@
-v. 1.3.2
-1. Small changes to level generation system.
+v. 1.3.3
+1. 'parseVector3d', 'parseVector3i' and 'parseLocation' methods now can have default values.

@@ -47,6 +47,15 @@ public class GWMLibraryUtils {
         return new Vector3i(x, y, z);
     }
 
+    public static Vector3i parseVector3i(ConfigurationNode node, Vector3i def) {
+        try {
+            return parseVector3i(node);
+        } catch (Exception e) {
+            GWMLibrary.getInstance().getLogger().debug("Failed to parse Vector3i!", e);
+            return def;
+        }
+    }
+
     public static Vector3d parseVector3d(ConfigurationNode node) {
         ConfigurationNode xNode = node.getNode("X");
         ConfigurationNode yNode = node.getNode("Y");
@@ -64,6 +73,15 @@ public class GWMLibraryUtils {
         double y = yNode.getDouble();
         double z = zNode.getDouble();
         return new Vector3d(x, y, z);
+    }
+
+    public static Vector3d parseVector3d(ConfigurationNode node, Vector3d def) {
+        try {
+            return parseVector3d(node);
+        } catch (Exception e) {
+            GWMLibrary.getInstance().getLogger().debug("Failed to parse Vector3d!", e);
+            return def;
+        }
     }
 
     public static Location<World> parseLocation(ConfigurationNode node) {
@@ -93,6 +111,15 @@ public class GWMLibraryUtils {
         }
         World world = optionalWorld.get();
         return new Location<>(world, x, y, z);
+    }
+
+    public static Location<World> parseLocation(ConfigurationNode node, Location<World> def) {
+        try {
+            return parseLocation(node);
+        } catch (Exception e) {
+            GWMLibrary.getInstance().getLogger().debug("Failed to parse Location!", e);
+            return def;
+        }
     }
 
     public static Optional<List<HologramsService.Hologram>> tryCreateHolograms(
