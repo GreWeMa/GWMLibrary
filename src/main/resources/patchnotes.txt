@@ -1,2 +1,5 @@
+v. beta-1.4
+1. Added PlaceholderAPI support.
+
 v. 1.3.4
 1. No changes, just moving to stable on Ore.

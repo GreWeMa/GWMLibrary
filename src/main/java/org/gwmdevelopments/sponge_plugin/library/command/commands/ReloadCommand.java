@@ -12,7 +12,7 @@ public class ReloadCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         GWMLibrary.getInstance().reload();
-        src.sendMessage(GWMLibrary.getInstance().getLanguage().getText("SUCCESSFULLY_RELOADED"));
+        src.sendMessage(GWMLibrary.getInstance().getLanguage().getText("SUCCESSFULLY_RELOADED", src, null));
         return CommandResult.success();
     }
 }

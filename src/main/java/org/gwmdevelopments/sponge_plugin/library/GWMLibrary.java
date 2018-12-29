@@ -1,6 +1,7 @@
 package org.gwmdevelopments.sponge_plugin.library;
 
 import de.randombyte.holograms.api.HologramsService;
+import me.rojo8399.placeholderapi.PlaceholderService;
 import org.gwmdevelopments.sponge_plugin.library.command.GWMLibraryCommandUtils;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -25,10 +26,11 @@ import java.util.Optional;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "1.3.4",
+        version = "beta-1.4",
         description = "Necessary library to run plugins developed by GWM!",
         dependencies = {
-                @Dependency(id = "holograms", optional = true)
+                @Dependency(id = "holograms", optional = true),
+                @Dependency(id = "placeholderapi", optional = true)
         },
         authors = {"GWM"/* My contacts:
                          * E-Mail(nazark@tutanota.com),
@@ -36,7 +38,7 @@ import java.util.Optional;
                          * Discord(GWM#2192)*/})
 public class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 1, 3, 4);
+    public static final Version VERSION = new Version("beta", 1, 4);
 
     private static GWMLibrary instance = null;
 
@@ -65,6 +67,7 @@ public class GWMLibrary extends SpongePlugin {
     private Language language;
 
     private Optional<HologramsService> hologramsService = Optional.empty();
+    private Optional<PlaceholderService> placeholderService = Optional.empty();
 
     private boolean checkUpdates = true;
 
@@ -98,6 +101,7 @@ public class GWMLibrary extends SpongePlugin {
     @Listener
     public void onPostInitialization(GamePostInitializationEvent event) {
         loadHologramsService();
+        loadPlaceholderService();
         logger.info("\"GamePostInitialization\" completed!");
     }
 
@@ -127,7 +131,9 @@ public class GWMLibrary extends SpongePlugin {
         loadConfigValues();
         cause = Cause.of(EventContext.empty(), container);
         hologramsService = Optional.empty();
+        placeholderService = Optional.empty();
         loadHologramsService();
+        loadPlaceholderService();
         if (checkUpdates) {
             checkUpdates();
         }
@@ -146,13 +152,28 @@ public class GWMLibrary extends SpongePlugin {
                 return true;
             }
         } catch (NoClassDefFoundError ignored) {}
-        logger.warn("Holograms Service does not found!");
-        logger.info("Please install \"Holograms\" plugin (https://ore.spongepowered.org/RandomByte/Holograms) if you want use holograms!");
+        logger.warn("Holograms Service not found!");
+        return false;
+    }
+
+    private boolean loadPlaceholderService() {
+        try {
+            placeholderService = Sponge.getServiceManager().provide(PlaceholderService.class);
+            if (placeholderService.isPresent()) {
+                logger.info("Placeholder Service found!");
+                return true;
+            }
+        } catch (NoClassDefFoundError ignored) {}
+        logger.warn("Placeholder Service not found!");
         return false;
     }
 
     public Optional<HologramsService> getHologramsService() {
         return hologramsService;
+    }
+
+    public Optional<PlaceholderService> getPlaceholderService() {
+        return placeholderService;
     }
 
     @Override

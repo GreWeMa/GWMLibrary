@@ -18,7 +18,7 @@ public class BlockInfoCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if (!(src instanceof Player)) {
-            src.sendMessages(GWMLibrary.getInstance().getLanguage().getText("COMMAND_USABLE_ONLY_BY_PLAYER"));
+            src.sendMessages(GWMLibrary.getInstance().getLanguage().getText("COMMAND_USABLE_ONLY_BY_PLAYER", src, null));
             return CommandResult.success();
         }
         Player player = (Player) src;
@@ -27,7 +27,7 @@ public class BlockInfoCommand implements CommandExecutor {
                 build();
         BlockRayHit<World> blockRayHit = blockRay.end().get();
         BlockState block = blockRayHit.getLocation().getBlock();
-        src.sendMessage(GWMLibrary.getInstance().getLanguage().getText("BLOCK_INFO",
+        src.sendMessage(GWMLibrary.getInstance().getLanguage().getText("BLOCK_INFO", src, null,
                 new Pair<>("%BLOCK%", block)));
         return CommandResult.success();
     }

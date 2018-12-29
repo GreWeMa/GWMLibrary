@@ -1,14 +1,18 @@
 package org.gwmdevelopments.sponge_plugin.library.utils;
 
 import com.google.common.reflect.TypeToken;
+import me.rojo8399.placeholderapi.PlaceholderService;
 import ninja.leaping.configurate.ConfigurationNode;
+import org.gwmdevelopments.sponge_plugin.library.GWMLibrary;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Language {
 
@@ -38,9 +42,14 @@ public class Language {
         }
     }
 
-    public Text getText(String path, Pair<String, ?>... pairs) {
+    public Text getText(String path, Object source, Object observer, Pair<String, ?>... pairs) {
         try {
-            return TextSerializers.FORMATTING_CODE.deserialize(getPhrase(path, pairs));
+            Text text = TextSerializers.FORMATTING_CODE.deserialize(getPhrase(path, pairs));
+            Optional<PlaceholderService> optionalPlaceholderService = GWMLibrary.getInstance().getPlaceholderService();
+            if (optionalPlaceholderService.isPresent()) {
+                text = optionalPlaceholderService.get().replacePlaceholders(text, source, observer);
+            }
+            return text;
         } catch (Exception e) {
             plugin.getLogger().warn("Failed to get text \"" + path + "\" from language config!", e);
             return Text.builder(DEFAULT.replace("%PATH%", path)).color(TextColors.RED).build();
@@ -50,7 +59,7 @@ public class Language {
     public List<String> getPhraseList(String path, Pair<String, ?>... pairs) {
         ConfigurationNode node = plugin.getLanguageConfig().getNode(path.toUpperCase());
         try {
-            List<String> list = node.getValue(new TypeToken<List<String>>(){}, new ArrayList<String>());
+            List<String> list = node.getValue(new TypeToken<List<String>>(){}, new ArrayList<>());
             for (int i = 0; i < list.size(); i++) {
                 String phrase = list.get(i);
                 for (Pair<String, ?> pair : pairs) {
@@ -61,20 +70,24 @@ public class Language {
             return list;
         } catch (Exception e) {
             plugin.getLogger().warn("Failed to get phrase list \"" + path + "\" from language config!", e);
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add(DEFAULT.replace("%PATH%", path));
             return list;
         }
     }
 
-    public List<Text> getTextList(String path, Pair<String, ?>... pairs) {
+    public List<Text> getTextList(String path, Object source, Object observer, Pair<String, ?>... pairs) {
         try {
-            return getPhraseList(path, pairs).stream().
-                    map(TextSerializers.FORMATTING_CODE::deserialize).
-                    collect(Collectors.toList());
+            Stream<Text> stream = getPhraseList(path, pairs).stream().
+                    map(TextSerializers.FORMATTING_CODE::deserialize);
+            Optional<PlaceholderService> optionalPlaceholderService = GWMLibrary.getInstance().getPlaceholderService();
+            if (optionalPlaceholderService.isPresent()) {
+                stream = stream.map(text -> optionalPlaceholderService.get().replacePlaceholders(text, source, observer));
+            }
+            return stream.collect(Collectors.toList());
         } catch (Exception e) {
             plugin.getLogger().warn("Failed to get text list \"" + path + "\" from language config!", e);
-            List<Text> list = new ArrayList<Text>();
+            List<Text> list = new ArrayList<>();
             list.add(Text.builder(DEFAULT.replace("%PATH%", path)).color(TextColors.RED).build());
             return list;
         }

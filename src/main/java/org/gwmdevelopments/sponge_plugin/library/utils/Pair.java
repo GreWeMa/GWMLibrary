@@ -18,9 +18,9 @@ public class Pair<K, V> implements Map.Entry<K, V> {
     }
 
     public K setKey(K key) {
-        K old_key = this.key;
+        K oldKey = this.key;
         this.key = key;
-        return old_key;
+        return oldKey;
     }
 
     @Override
@@ -30,8 +30,8 @@ public class Pair<K, V> implements Map.Entry<K, V> {
 
     @Override
     public V setValue(V value) {
-        V old_value = this.value;
+        V oldValue = this.value;
         this.value = value;
-        return old_value;
+        return oldValue;
     }
 }

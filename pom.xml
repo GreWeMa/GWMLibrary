@@ -6,7 +6,7 @@
 
     <groupId>org.gwmdevelopments.sponge_plugin</groupId>
     <artifactId>library</artifactId>
-    <version>1.3.4</version>
+    <version>beta-1.4</version>
     <name>GWMLibrary</name>
 
     <repositories>
@@ -25,11 +25,19 @@
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
             <version>7.1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.randombyte-developer.holograms</groupId>
-            <artifactId>holograms-api</artifactId>
+            <groupId>com.github.randombyte-developer</groupId>
+            <artifactId>holograms</artifactId>
             <version>LATEST</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.rojo8399</groupId>
+            <artifactId>PlaceholderAPI</artifactId>
+            <version>4.5.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

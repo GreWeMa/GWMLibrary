@@ -12,7 +12,7 @@ public class HelpCommand implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        src.sendMessages(GWMLibrary.getInstance().getLanguage().getTextList("HELP_MESSAGE",
+        src.sendMessages(GWMLibrary.getInstance().getLanguage().getTextList("HELP_MESSAGE", src, null,
                 new Pair<>("%VERSION%", GWMLibrary.VERSION.toString())));
         return CommandResult.success();
     }
