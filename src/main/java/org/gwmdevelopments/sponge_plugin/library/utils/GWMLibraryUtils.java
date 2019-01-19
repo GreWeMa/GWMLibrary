@@ -5,22 +5,25 @@ import com.flowpowered.math.vector.Vector3i;
 import com.google.gson.Gson;
 import de.randombyte.holograms.api.HologramsService;
 import ninja.leaping.configurate.ConfigurationNode;
+import org.gwmdevelopments.sponge_plugin.library.GWMLibrary;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import org.gwmdevelopments.sponge_plugin.library.GWMLibrary;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class GWMLibraryUtils {
+public final class GWMLibraryUtils {
+
+    private GWMLibraryUtils() {
+    }
 
     public static final Gson GSON = new Gson();
 
     public static int getRandomIntLevel() {
-        Random random = new Random();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         int level = 1;
         while (random.nextBoolean()) {
             level++;
@@ -33,13 +36,13 @@ public class GWMLibraryUtils {
         ConfigurationNode yNode = node.getNode("Y");
         ConfigurationNode zNode = node.getNode("Z");
         if (xNode.isVirtual()) {
-            throw new RuntimeException("X node does not exist!");
+            throw new IllegalArgumentException("X node does not exist!");
         }
         if (yNode.isVirtual()) {
-            throw new RuntimeException("Y node does not exist!");
+            throw new IllegalArgumentException("Y node does not exist!");
         }
         if (zNode.isVirtual()) {
-            throw new RuntimeException("Z node does not exist!");
+            throw new IllegalArgumentException("Z node does not exist!");
         }
         int x = xNode.getInt();
         int y = yNode.getInt();
@@ -51,7 +54,7 @@ public class GWMLibraryUtils {
         try {
             return parseVector3i(node);
         } catch (Exception e) {
-            GWMLibrary.getInstance().getLogger().debug("Failed to parse Vector3i!", e);
+            GWMLibrary.getInstance().getLogger().warn("Failed to parse Vector3i!", e);
             return def;
         }
     }
@@ -61,13 +64,13 @@ public class GWMLibraryUtils {
         ConfigurationNode yNode = node.getNode("Y");
         ConfigurationNode zNode = node.getNode("Z");
         if (xNode.isVirtual()) {
-            throw new RuntimeException("X node does not exist!");
+            throw new IllegalArgumentException("X node does not exist!");
         }
         if (yNode.isVirtual()) {
-            throw new RuntimeException("Y node does not exist!");
+            throw new IllegalArgumentException("Y node does not exist!");
         }
         if (zNode.isVirtual()) {
-            throw new RuntimeException("Z node does not exist!");
+            throw new IllegalArgumentException("Z node does not exist!");
         }
         double x = xNode.getDouble();
         double y = yNode.getDouble();
@@ -79,7 +82,7 @@ public class GWMLibraryUtils {
         try {
             return parseVector3d(node);
         } catch (Exception e) {
-            GWMLibrary.getInstance().getLogger().debug("Failed to parse Vector3d!", e);
+            GWMLibrary.getInstance().getLogger().warn("Failed to parse Vector3d!", e);
             return def;
         }
     }
@@ -90,16 +93,16 @@ public class GWMLibraryUtils {
         ConfigurationNode zNode = node.getNode("Z");
         ConfigurationNode worldNode = node.getNode("WORLD_NAME");
         if (xNode.isVirtual()) {
-            throw new RuntimeException("X node does not exist!");
+            throw new IllegalArgumentException("X node does not exist!");
         }
         if (yNode.isVirtual()) {
-            throw new RuntimeException("Y node does not exist!");
+            throw new IllegalArgumentException("Y node does not exist!");
         }
         if (zNode.isVirtual()) {
-            throw new RuntimeException("Z node does not exist!");
+            throw new IllegalArgumentException("Z node does not exist!");
         }
         if (worldNode.isVirtual()) {
-            throw new RuntimeException("WORLD_NAME node does not exist!");
+            throw new IllegalArgumentException("WORLD_NAME node does not exist!");
         }
         double x = xNode.getDouble();
         double y = yNode.getDouble();
@@ -107,7 +110,7 @@ public class GWMLibraryUtils {
         String worldName = worldNode.getString();
         Optional<World> optionalWorld = Sponge.getServer().getWorld(worldName);
         if (!optionalWorld.isPresent()) {
-            throw new RuntimeException("World \"" + worldName + "\" does not exist!");
+            throw new IllegalArgumentException("World \"" + worldName + "\" does not exist!");
         }
         World world = optionalWorld.get();
         return new Location<>(world, x, y, z);
@@ -117,7 +120,45 @@ public class GWMLibraryUtils {
         try {
             return parseLocation(node);
         } catch (Exception e) {
-            GWMLibrary.getInstance().getLogger().debug("Failed to parse Location!", e);
+            GWMLibrary.getInstance().getLogger().warn("Failed to parse Location!", e);
+            return def;
+        }
+    }
+
+    public static Location<World> parseBlockLocation(ConfigurationNode node) {
+        ConfigurationNode xNode = node.getNode("X");
+        ConfigurationNode yNode = node.getNode("Y");
+        ConfigurationNode zNode = node.getNode("Z");
+        ConfigurationNode worldNode = node.getNode("WORLD_NAME");
+        if (xNode.isVirtual()) {
+            throw new IllegalArgumentException("X node does not exist!");
+        }
+        if (yNode.isVirtual()) {
+            throw new IllegalArgumentException("Y node does not exist!");
+        }
+        if (zNode.isVirtual()) {
+            throw new IllegalArgumentException("Z node does not exist!");
+        }
+        if (worldNode.isVirtual()) {
+            throw new IllegalArgumentException("WORLD_NAME node does not exist!");
+        }
+        int x = xNode.getInt();
+        int y = yNode.getInt();
+        int z = zNode.getInt();
+        String worldName = worldNode.getString();
+        Optional<World> optionalWorld = Sponge.getServer().getWorld(worldName);
+        if (!optionalWorld.isPresent()) {
+            throw new IllegalArgumentException("World \"" + worldName + "\" does not exist!");
+        }
+        World world = optionalWorld.get();
+        return new Location<>(world, x, y, z);
+    }
+
+    public static Location<World> parseBlockLocation(ConfigurationNode node, Location<World> def) {
+        try {
+            return parseBlockLocation(node);
+        } catch (Exception e) {
+            GWMLibrary.getInstance().getLogger().warn("Failed to parse block Location!", e);
             return def;
         }
     }

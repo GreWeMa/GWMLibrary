@@ -3,6 +3,10 @@ package org.gwmdevelopments.sponge_plugin.library;
 import de.randombyte.holograms.api.HologramsService;
 import me.rojo8399.placeholderapi.PlaceholderService;
 import org.gwmdevelopments.sponge_plugin.library.command.GWMLibraryCommandUtils;
+import org.gwmdevelopments.sponge_plugin.library.utils.Config;
+import org.gwmdevelopments.sponge_plugin.library.utils.Language;
+import org.gwmdevelopments.sponge_plugin.library.utils.SpongePlugin;
+import org.gwmdevelopments.sponge_plugin.library.utils.Version;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -14,10 +18,7 @@ import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.gwmdevelopments.sponge_plugin.library.utils.Config;
-import org.gwmdevelopments.sponge_plugin.library.utils.Language;
-import org.gwmdevelopments.sponge_plugin.library.utils.SpongePlugin;
-import org.gwmdevelopments.sponge_plugin.library.utils.Version;
+import org.spongepowered.api.service.economy.EconomyService;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -26,7 +27,7 @@ import java.util.Optional;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "beta-1.4",
+        version = "beta-1.5",
         description = "Necessary library to run plugins developed by GWM!",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -36,15 +37,15 @@ import java.util.Optional;
                          * E-Mail(nazark@tutanota.com),
                          * Telegram(@grewema),
                          * Discord(GWM#2192)*/})
-public class GWMLibrary extends SpongePlugin {
+public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version("beta", 1, 4);
+    public static final Version VERSION = new Version("beta", 1, 5);
 
     private static GWMLibrary instance = null;
 
     public static GWMLibrary getInstance() {
         if (instance == null) {
-            throw new RuntimeException("GWMLibrary not initialized!");
+            throw new IllegalStateException("GWMLibrary not initialized!");
         }
         return instance;
     }
@@ -66,6 +67,7 @@ public class GWMLibrary extends SpongePlugin {
 
     private Language language;
 
+    private Optional<EconomyService> economyService = Optional.empty();
     private Optional<HologramsService> hologramsService = Optional.empty();
     private Optional<PlaceholderService> placeholderService = Optional.empty();
 
@@ -100,6 +102,7 @@ public class GWMLibrary extends SpongePlugin {
 
     @Listener
     public void onPostInitialization(GamePostInitializationEvent event) {
+        loadEconomyService();
         loadHologramsService();
         loadPlaceholderService();
         logger.info("\"GamePostInitialization\" completed!");
@@ -130,8 +133,10 @@ public class GWMLibrary extends SpongePlugin {
         languageConfig.reload();
         loadConfigValues();
         cause = Cause.of(EventContext.empty(), container);
+        economyService = Optional.empty();
         hologramsService = Optional.empty();
         placeholderService = Optional.empty();
+        loadEconomyService();
         loadHologramsService();
         loadPlaceholderService();
         if (checkUpdates) {
@@ -142,6 +147,16 @@ public class GWMLibrary extends SpongePlugin {
 
     private void loadConfigValues() {
         checkUpdates = config.getNode("CHECK_UPDATES").getBoolean(true);
+    }
+
+    private boolean loadEconomyService() {
+        economyService = Sponge.getServiceManager().provide(EconomyService.class);
+        if (economyService.isPresent()) {
+            logger.info("Economy Service found!");
+            return true;
+        }
+        logger.warn("Economy Service not found!");
+        return false;
     }
 
     private boolean loadHologramsService() {
@@ -166,6 +181,10 @@ public class GWMLibrary extends SpongePlugin {
         } catch (NoClassDefFoundError ignored) {}
         logger.warn("Placeholder Service not found!");
         return false;
+    }
+
+    public Optional<EconomyService> getEconomyService() {
+        return economyService;
     }
 
     public Optional<HologramsService> getHologramsService() {
