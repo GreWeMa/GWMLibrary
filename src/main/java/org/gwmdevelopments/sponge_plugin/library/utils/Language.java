@@ -3,11 +3,17 @@ package org.gwmdevelopments.sponge_plugin.library.utils;
 import com.google.common.reflect.TypeToken;
 import me.rojo8399.placeholderapi.PlaceholderService;
 import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.gwmdevelopments.sponge_plugin.library.GWMLibrary;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.Asset;
+import org.spongepowered.api.asset.AssetManager;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +25,24 @@ public class Language {
     public static final String DEFAULT = "ERROR! Unable to get phrase \"%PATH%\"! Check your \"language.conf\"!";
 
     private final SpongePlugin plugin;
+    private Optional<ConfigurationNode> defaultNode = Optional.empty();
 
     public Language(SpongePlugin plugin) {
         this.plugin = plugin;
+        try {
+            AssetManager assetManager = Sponge.getAssetManager();
+            Optional<Asset> optionalAsset = assetManager.getAsset(plugin, "language.conf");
+            if (optionalAsset.isPresent()) {
+                Asset asset = optionalAsset.get();
+                defaultNode = Optional.of(HoconConfigurationLoader.builder().
+                        setSource(() -> new BufferedReader(new InputStreamReader(asset.getUrl().openStream()))).
+                        build().load());
+            } else {
+                plugin.getLogger().warn("Plugin \"" + plugin.getContainer().getId() + "\" does not have \"language.conf\" asset!");
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warn("Failed to initialize Language!", e);
+        }
     }
 
     public boolean exists(String path) {
@@ -29,8 +50,8 @@ public class Language {
     }
 
     public String getPhrase(String path, Pair<String, ?>... pairs) {
-        ConfigurationNode node = plugin.getLanguageConfig().getNode(path.toUpperCase());
         try {
+            ConfigurationNode node = getAndCheckNode(path);
             String phrase = node.getValue(TypeToken.of(String.class), DEFAULT.replace("%PATH%", path));
             for (Pair<String, ?> pair : pairs) {
                 phrase = phrase.replace(pair.getKey(), pair.getValue().toString());
@@ -57,8 +78,8 @@ public class Language {
     }
 
     public List<String> getPhraseList(String path, Pair<String, ?>... pairs) {
-        ConfigurationNode node = plugin.getLanguageConfig().getNode(path.toUpperCase());
         try {
+            ConfigurationNode node = getAndCheckNode(path);
             List<String> list = node.getValue(new TypeToken<List<String>>(){}, new ArrayList<>());
             for (int i = 0; i < list.size(); i++) {
                 String phrase = list.get(i);
@@ -90,6 +111,25 @@ public class Language {
             List<Text> list = new ArrayList<>();
             list.add(Text.builder(DEFAULT.replace("%PATH%", path)).color(TextColors.RED).build());
             return list;
+        }
+    }
+
+    private ConfigurationNode getAndCheckNode(String path) {
+        ConfigurationNode node = plugin.getLanguageConfig().getNode(path.toUpperCase());
+        if (node.isVirtual()) {
+            if (defaultNode.isPresent()) {
+                node = defaultNode.get().getNode(path);
+                if (node.isVirtual()) {
+                    throw new IllegalArgumentException("Path \"" + path + "\" does exist in both Language config and embedded Language config!");
+                } else {
+                    plugin.getLogger().warn("Path \"" + path + "\" does not exist in Language config! Using embedded Language config.");
+                    return node;
+                }
+            } else {
+                throw new IllegalArgumentException("Path \"" + path + "\" does not exist!");
+            }
+        } else {
+            return node;
         }
     }
 }
