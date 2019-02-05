@@ -27,7 +27,7 @@ import java.util.Optional;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "beta-1.5",
+        version = "beta-1.6",
         description = "Necessary library to run plugins developed by GWM!",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -39,7 +39,7 @@ import java.util.Optional;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version("beta", 1, 5);
+    public static final Version VERSION = new Version("beta", 1, 6);
 
     private static GWMLibrary instance = null;
 
@@ -64,6 +64,7 @@ public final class GWMLibrary extends SpongePlugin {
 
     private Config config;
     private Config languageConfig;
+    private Config savedItemsConfig;
 
     private Language language;
 
@@ -86,6 +87,7 @@ public final class GWMLibrary extends SpongePlugin {
         cause = Cause.of(EventContext.empty(), container);
         config = new Config(this, "config.conf", false);
         languageConfig = new Config(this, "language.conf", false);
+        savedItemsConfig = new Config(this, "saved_items.conf", false);
         loadConfigValues();
         language = new Language(this);
         if (checkUpdates) {
@@ -131,6 +133,7 @@ public final class GWMLibrary extends SpongePlugin {
     public void reload() {
         config.reload();
         languageConfig.reload();
+        savedItemsConfig.reload();
         loadConfigValues();
         cause = Cause.of(EventContext.empty(), container);
         economyService = Optional.empty();
@@ -228,6 +231,10 @@ public final class GWMLibrary extends SpongePlugin {
     @Override
     public Config getLanguageConfig() {
         return languageConfig;
+    }
+
+    public Config getSavedItemsConfig() {
+        return savedItemsConfig;
     }
 
     @Override

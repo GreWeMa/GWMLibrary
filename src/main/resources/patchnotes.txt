@@ -1,3 +1,8 @@
+v. beta-1.6
+1. Move "parseItem" from GWMCratesUtils to GWMLibraryUtils.
+2. Add "writeItem" to GWMLibraryUtils.
+3. Add "saveitem" command.
+
 v. beta-1.5
 1. Refactoring
 2. Remove block-info command
