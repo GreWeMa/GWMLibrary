@@ -27,7 +27,7 @@ import java.util.Optional;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "beta-1.6.1",
+        version = "beta-1.6.2",
         description = "Necessary library to run plugins developed by GWM!",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -39,7 +39,7 @@ import java.util.Optional;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version("beta", 1, 6, 1);
+    public static final Version VERSION = new Version("beta", 1, 6, 2);
 
     private static GWMLibrary instance = null;
 
