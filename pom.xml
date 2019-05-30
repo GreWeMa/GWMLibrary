@@ -6,7 +6,7 @@
 
     <groupId>org.gwmdevelopments.sponge_plugin</groupId>
     <artifactId>library</artifactId>
-    <version>beta-1.6.2</version>
+    <version>beta-1.7</version>
     <name>GWMLibrary</name>
 
     <repositories>

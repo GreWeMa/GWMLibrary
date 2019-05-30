@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import de.randombyte.holograms.api.HologramsService;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.SimpleConfigurationNode;
+import ninja.leaping.configurate.ValueType;
 import org.gwmdevelopments.sponge_plugin.library.GWMLibrary;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
@@ -172,18 +173,59 @@ public final class GWMLibraryUtils {
         }
     }
 
-    public static Optional<List<HologramsService.Hologram>> tryCreateHolograms(
-            Location<World> location, Optional<List<Text>> optionalTextList) {
-        return tryCreateHolograms(location, optionalTextList, new Vector3d(), 0.2);
+    public static HologramSettings parseHologramSettings(ConfigurationNode node,
+                                                         Vector3d defaultOffset, double defaultMultilineDistance) {
+        //Backwards compatibility
+        if (node.getValueType() == ValueType.LIST) {
+            GWMLibrary.getInstance().getLogger().warn("[BACKWARD COMPATIBILITY] Old format for hologram configuration is used!");
+            try {
+                return new HologramSettings(node.getList(TypeToken.of(String.class)).
+                        stream().
+                        map(TextSerializers.FORMATTING_CODE::deserialize).
+                        collect(Collectors.toList()),
+                        defaultOffset, defaultMultilineDistance);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Failed to parse hologram settings!", e);
+            }
+        }
+
+        ConfigurationNode linesNode = node.getNode("LINES");
+        ConfigurationNode offsetNode = node.getNode("OFFSET");
+        ConfigurationNode multilineDistanceNode = node.getNode("MULTILINE_DISTANCE");
+        if (linesNode.isVirtual()) {
+            throw new IllegalArgumentException("LINES node does not exist!");
+        }
+        try {
+            List<Text> lines = linesNode.getList(TypeToken.of(String.class)).
+                    stream().
+                    map(TextSerializers.FORMATTING_CODE::deserialize).
+                    collect(Collectors.toList());
+            Vector3d offset = offsetNode.isVirtual() ?
+                    defaultOffset :
+                    parseVector3d(offsetNode);
+            double multilineDistance = multilineDistanceNode.isVirtual() ?
+                    defaultMultilineDistance :
+                    multilineDistanceNode.getDouble();
+            return new HologramSettings(lines, offset, multilineDistance);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse hologram settings!", e);
+        }
     }
 
-    public static Optional<List<HologramsService.Hologram>> tryCreateHolograms(
-            Location<World> location, Optional<List<Text>> optionalTextList,
-            Vector3d hologramOffset, double multilineHologramsDistance) {
-        if (!optionalTextList.isPresent()) {
-            return Optional.empty();
+    public static HologramSettings parseHologramSettings(ConfigurationNode node,
+                                                         Vector3d defaultOffset, double defaultMultilineDistance,
+                                                         HologramSettings def) {
+        try {
+            return parseHologramSettings(node, defaultOffset, defaultMultilineDistance);
+        } catch (Exception e) {
+            GWMLibrary.getInstance().getLogger().warn("Failed to parse hologram settings!", e);
+            return def;
         }
-        List<Text> textList = optionalTextList.get();
+    }
+
+        public static Optional<List<HologramsService.Hologram>> createHologram(
+            Location<World> location, HologramSettings settings) {
+        List<Text> lines = settings.getLines();
         Optional<HologramsService> optionalHologramsService = GWMLibrary.getInstance().getHologramsService();
         if (!optionalHologramsService.isPresent()) {
             GWMLibrary.getInstance().getLogger().warn("Failed to create hologram, Holograms Service not found!");
@@ -192,10 +234,9 @@ public final class GWMLibraryUtils {
         HologramsService hologramsService = optionalHologramsService.get();
         location.getExtent().loadChunk(location.getChunkPosition(), true);
         Optional<List<HologramsService.Hologram>> optionalHologram = hologramsService.
-                createMultilineHologram(location.add(hologramOffset), textList, multilineHologramsDistance);
+                createMultilineHologram(location.add(settings.getOffset()), lines, settings.getMultilineDistance());
         if (!optionalHologram.isPresent()) {
             GWMLibrary.getInstance().getLogger().warn("Holograms Service found, but hologram can not be created! :-(");
-            return Optional.empty();
         }
         return optionalHologram;
     }
