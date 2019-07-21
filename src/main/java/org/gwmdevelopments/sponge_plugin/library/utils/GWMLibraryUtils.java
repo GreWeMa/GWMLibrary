@@ -18,6 +18,7 @@ import org.spongepowered.api.item.enchantment.EnchantmentType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.world.ChunkTicketManager;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -26,6 +27,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public final class GWMLibraryUtils {
+
+    private static Map<World, ChunkTicketManager.LoadingTicket> loadingTickets = new HashMap<>();
 
     private GWMLibraryUtils() {
     }
@@ -223,22 +226,44 @@ public final class GWMLibraryUtils {
         }
     }
 
-        public static Optional<List<HologramsService.Hologram>> createHologram(
-            Location<World> location, HologramSettings settings) {
+    public static CreatedHologram createHologram(
+            Location<World> location, HologramSettings settings, boolean keepLoaded) {
         List<Text> lines = settings.getLines();
         Optional<HologramsService> optionalHologramsService = GWMLibrary.getInstance().getHologramsService();
         if (!optionalHologramsService.isPresent()) {
-            GWMLibrary.getInstance().getLogger().warn("Failed to create hologram, Holograms Service not found!");
-            return Optional.empty();
+            throw new RuntimeException("Failed to create hologram, Holograms Service not found!");
         }
         HologramsService hologramsService = optionalHologramsService.get();
         location.getExtent().loadChunk(location.getChunkPosition(), true);
-        Optional<List<HologramsService.Hologram>> optionalHologram = hologramsService.
-                createMultilineHologram(location.add(settings.getOffset()), lines, settings.getMultilineDistance());
-        if (!optionalHologram.isPresent()) {
-            GWMLibrary.getInstance().getLogger().warn("Holograms Service found, but hologram can not be created! :-(");
+        Optional<ChunkTicketManager.LoadingTicket> optionalLoadingTicket = getTicket(location.getExtent());
+        if (keepLoaded) {
+            optionalLoadingTicket.ifPresent(loadingTicket -> loadingTicket.forceChunk(location.getChunkPosition()));
         }
-        return optionalHologram;
+        Optional<List<HologramsService.Hologram>> optionalHolograms = hologramsService.
+                createMultilineHologram(location.add(settings.getOffset()), lines, settings.getMultilineDistance());
+        if (!optionalHolograms.isPresent()) {
+            throw new RuntimeException("Holograms Service found, but hologram can not be created!");
+        }
+        List<HologramsService.Hologram> holograms = optionalHolograms.get();
+        if (holograms.isEmpty()) {
+            throw new RuntimeException("Created hologram is empty!");
+        }
+        return new CreatedHologram(holograms, holograms.get(0).getLocation(), optionalLoadingTicket);
+    }
+
+    private static Optional<ChunkTicketManager.LoadingTicket> getTicket(World world) {
+        if (loadingTickets.containsKey(world)) {
+            return Optional.of(loadingTickets.get(world));
+        }
+        Optional<ChunkTicketManager.LoadingTicket> optionalLoadingTicket =
+                GWMLibrary.getInstance().getChunkTicketManager().flatMap(manager -> {
+                    //Without registering a callback an exception will be thrown during ticket creation!
+                    manager.registerCallback(GWMLibrary.getInstance(), (i1, i2) -> {
+                    });
+                    return manager.createTicket(GWMLibrary.getInstance(), world);
+                });
+        optionalLoadingTicket.ifPresent(loadingTicket -> loadingTickets.put(world, loadingTicket));
+        return optionalLoadingTicket;
     }
 
     public static Enchantment parseEnchantment(ConfigurationNode node) {

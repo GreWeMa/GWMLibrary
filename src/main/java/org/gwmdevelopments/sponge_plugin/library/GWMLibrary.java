@@ -19,6 +19,8 @@ import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.ChunkTicketManager;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -27,7 +29,7 @@ import java.util.Optional;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "beta-1.7",
+        version = "beta-1.8",
         description = "Necessary library to run plugins developed by GWM!",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -39,7 +41,7 @@ import java.util.Optional;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version("beta", 1, 7);
+    public static final Version VERSION = new Version("beta", 1, 8);
 
     private static GWMLibrary instance = null;
 
@@ -71,6 +73,7 @@ public final class GWMLibrary extends SpongePlugin {
     private Optional<EconomyService> economyService = Optional.empty();
     private Optional<HologramsService> hologramsService = Optional.empty();
     private Optional<PlaceholderService> placeholderService = Optional.empty();
+    private Optional<ChunkTicketManager> chunkTicketManager = Optional.empty();
 
     private boolean checkUpdates = true;
 
@@ -107,6 +110,7 @@ public final class GWMLibrary extends SpongePlugin {
         loadEconomyService();
         loadHologramsService();
         loadPlaceholderService();
+        loadChunkTicketManager();
         logger.info("\"GamePostInitialization\" completed!");
     }
 
@@ -139,11 +143,20 @@ public final class GWMLibrary extends SpongePlugin {
         economyService = Optional.empty();
         hologramsService = Optional.empty();
         placeholderService = Optional.empty();
+        chunkTicketManager = Optional.empty();
         loadEconomyService();
         loadHologramsService();
         loadPlaceholderService();
+        loadChunkTicketManager();
         if (checkUpdates) {
             checkUpdates();
+        }
+        Optional<ChunkTicketManager> optManager = Sponge.getServiceManager().provide(ChunkTicketManager.class);
+        Sponge.getServer().getBroadcastChannel().send(Text.of("optManager is present = " + optManager.isPresent()));
+        if (optManager.isPresent()) {
+            ChunkTicketManager manager = optManager.get();
+            int available = manager.getAvailableTickets(this, Sponge.getServer().getWorlds().iterator().next());
+            Sponge.getServer().getBroadcastChannel().send(Text.of("available = " + available));
         }
         logger.info("Plugin has been reloaded.");
     }
@@ -186,6 +199,16 @@ public final class GWMLibrary extends SpongePlugin {
         return false;
     }
 
+    private boolean loadChunkTicketManager() {
+        chunkTicketManager = Sponge.getServiceManager().provide(ChunkTicketManager.class);
+        if (chunkTicketManager.isPresent()) {
+            logger.info("Chunk Ticket Manager found!");
+            return true;
+        }
+        logger.warn("Chunk Ticket Manager not found! It is not recommended to use holograms when Chunk Ticket Manager is not present, because there is no guarantee of their successful removal.");
+        return false;
+    }
+
     public Optional<EconomyService> getEconomyService() {
         return economyService;
     }
@@ -196,6 +219,10 @@ public final class GWMLibrary extends SpongePlugin {
 
     public Optional<PlaceholderService> getPlaceholderService() {
         return placeholderService;
+    }
+
+    public Optional<ChunkTicketManager> getChunkTicketManager() {
+        return chunkTicketManager;
     }
 
     @Override
