@@ -151,13 +151,6 @@ public final class GWMLibrary extends SpongePlugin {
         if (checkUpdates) {
             checkUpdates();
         }
-        Optional<ChunkTicketManager> optManager = Sponge.getServiceManager().provide(ChunkTicketManager.class);
-        Sponge.getServer().getBroadcastChannel().send(Text.of("optManager is present = " + optManager.isPresent()));
-        if (optManager.isPresent()) {
-            ChunkTicketManager manager = optManager.get();
-            int available = manager.getAvailableTickets(this, Sponge.getServer().getWorlds().iterator().next());
-            Sponge.getServer().getBroadcastChannel().send(Text.of("available = " + available));
-        }
         logger.info("Plugin has been reloaded.");
     }
 
