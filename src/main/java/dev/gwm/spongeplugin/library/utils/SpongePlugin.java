@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.Asset;
+import org.spongepowered.api.asset.AssetManager;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Optional;
 
 public abstract class SpongePlugin {
 
@@ -47,6 +50,10 @@ public abstract class SpongePlugin {
     public abstract Config getConfig();
 
     public abstract Config getLanguageConfig();
+
+    public Optional<Asset> getDefaultTranslation(AssetManager assetManager) {
+        return assetManager.getAsset(this, "translations/en_us.conf");
+    }
 
     public abstract Language getLanguage();
 }

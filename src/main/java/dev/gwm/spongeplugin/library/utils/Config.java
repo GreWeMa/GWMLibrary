@@ -11,6 +11,7 @@ import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.Color;
 
 import java.io.File;
 import java.util.Optional;
@@ -47,6 +48,7 @@ public class Config {
             }
             TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
             serializers.registerType(TypeToken.of(Text.class), new TextSerializer());
+            serializers.registerType(TypeToken.of(Color.class), new ColorHexSerializer());
             options = ConfigurationOptions.defaults().setSerializers(serializers);
             loader = HoconConfigurationLoader.builder().setFile(file).build();
             node = loader.load(options);

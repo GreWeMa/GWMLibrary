@@ -13,12 +13,12 @@ public class TextSerializer implements TypeSerializer<Text> {
 
     @Nullable
     @Override
-    public Text deserialize(@NonNull TypeToken<?> type, @NonNull ConfigurationNode value) throws ObjectMappingException {
-        return TextSerializers.FORMATTING_CODE.deserialize(value.getString());
+    public Text deserialize(@NonNull TypeToken<?> type, @NonNull ConfigurationNode node) throws ObjectMappingException {
+        return TextSerializers.FORMATTING_CODE.deserialize(node.getString());
     }
 
     @Override
-    public void serialize(@NonNull TypeToken<?> type, @Nullable Text obj, @NonNull ConfigurationNode value) throws ObjectMappingException {
-        value.setValue(TextSerializers.FORMATTING_CODE.serialize(obj));
+    public void serialize(@NonNull TypeToken<?> type, @Nullable Text obj, @NonNull ConfigurationNode node) throws ObjectMappingException {
+        node.setValue(TextSerializers.FORMATTING_CODE.serialize(obj));
     }
 }

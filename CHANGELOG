@@ -1,2 +1,7 @@
+VERSION 2.1
+* Add `ColorHexSerializer`
+* Refactor `SpongePlugin`
+* Refactor `Language`
+
 VERSION 2.0
 * Release

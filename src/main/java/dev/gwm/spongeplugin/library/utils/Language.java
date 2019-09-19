@@ -34,7 +34,7 @@ public class Language {
         this.plugin = plugin;
         try {
             AssetManager assetManager = Sponge.getAssetManager();
-            Optional<Asset> optionalAsset = assetManager.getAsset(plugin, "language.conf");
+            Optional<Asset> optionalAsset = plugin.getDefaultTranslation(assetManager);
             if (optionalAsset.isPresent()) {
                 defaultNode = Optional.of(HoconConfigurationLoader.builder().
                         setSource(() -> new BufferedReader(new InputStreamReader(optionalAsset.get().getUrl().openStream()))).
@@ -42,7 +42,7 @@ public class Language {
                         load());
             } else {
                 defaultNode = Optional.empty();
-                plugin.getLogger().warn("Plugin \"" + plugin.getContainer().getId() + "\" does not have language.conf asset!");
+                plugin.getLogger().warn("Plugin \"" + plugin.getContainer().getId() + "\" does not have default translation asset!");
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize Language!", e);

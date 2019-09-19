@@ -1,7 +1,9 @@
 package dev.gwm.spongeplugin.library;
 
 import de.randombyte.holograms.api.HologramsService;
-import dev.gwm.spongeplugin.library.event.*;
+import dev.gwm.spongeplugin.library.event.SuperObjectCategoriesRegistrationEventImpl;
+import dev.gwm.spongeplugin.library.event.SuperObjectIdentifiersRegistrationEventImpl;
+import dev.gwm.spongeplugin.library.event.SuperObjectsRegistrationEventImpl;
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
 import dev.gwm.spongeplugin.library.superobject.randommanager.AbsoluteRandomManager;
 import dev.gwm.spongeplugin.library.superobject.randommanager.LevelRandomManager;
@@ -33,7 +35,7 @@ import java.util.Set;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "2.0",
+        version = "2.1",
         description = "Library with Super Objects and other utilities",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -45,7 +47,7 @@ import java.util.Set;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 2, 0);
+    public static final Version VERSION = new Version(null, 2, 1);
 
     private static GWMLibrary instance = null;
 
@@ -101,7 +103,7 @@ public final class GWMLibrary extends SpongePlugin {
         config = new Config(this, new File(configDirectory, "config.conf"),
                 assetManager.getAsset(this, "config.conf"), true, false);
         languageConfig = new Config(this, new File(configDirectory, "language.conf"),
-                assetManager.getAsset(this, "translations/en_us.conf"), true, false);
+                getDefaultTranslation(assetManager), true, false);
         savedSuperObjectsConfig = new Config(this, new File(configDirectory, "saved_super_objects.conf"),
                 assetManager.getAsset(this, "saved_super_objects.conf"), true, false);
         savedItemsConfig = new Config(this, new File(configDirectory, "saved_items.conf"),
