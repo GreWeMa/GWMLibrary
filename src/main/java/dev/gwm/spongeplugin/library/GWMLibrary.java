@@ -35,7 +35,7 @@ import java.util.Set;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "2.1",
+        version = "2.2",
         description = "Library with Super Objects and other utilities",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -47,7 +47,7 @@ import java.util.Set;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 2, 1);
+    public static final Version VERSION = new Version(null, 2, 2);
 
     private static GWMLibrary instance = null;
 
@@ -217,7 +217,7 @@ public final class GWMLibrary extends SpongePlugin {
                     if (logLoadedSavedSuperObjects) {
                         String category = superObject.category().getName();
                         String type = superObject.type();
-                        String id = superObject.id().get();
+                        String id = superObject.id();
                         logger.info("Loaded Saved Super Object with category \"" + category + "\", type \"" + type + "\" and id \"" + id + "\"");
                     }
                 } catch (Exception e) {

@@ -3,7 +3,6 @@ package dev.gwm.spongeplugin.library.superobject;
 import dev.gwm.spongeplugin.library.utils.SuperObjectCategory;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 public interface SuperObject {
@@ -19,5 +18,5 @@ public interface SuperObject {
 
     String type();
 
-    Optional<String> id();
+    String id();
 }

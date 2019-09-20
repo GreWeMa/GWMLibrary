@@ -70,9 +70,9 @@ public final class SuperObjectsServiceImpl implements SuperObjectsService {
         }
         try {
             T superObject = (T) classes.get(identifier).getConstructor(ConfigurationNode.class).newInstance(node);
-            Optional<String> optionalId = superObject.id();
-            if (optionalId.isPresent() && getSuperObjectById(optionalId.get()).isPresent()) {
-                throw new RuntimeException("Super Object id \"" + optionalId.get() + "\" is not unique!");
+            String id = superObject.id();
+            if (getSuperObjectById(id).isPresent()) {
+                throw new RuntimeException("Super Object id \"" + id + "\" is not unique!");
             }
             if (save) {
                 createdSuperObjects.add(superObject);

@@ -14,6 +14,6 @@ public class SuperObjectIdEqualsPredicate implements Predicate<SuperObject> {
 
     @Override
     public boolean test(SuperObject so) {
-        return so.id().isPresent() && so.id().get().equals(id);
+        return so.id().equals(id);
     }
 }

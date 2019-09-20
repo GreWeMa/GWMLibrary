@@ -5,15 +5,13 @@ import dev.gwm.spongeplugin.library.utils.GWMLibrarySuperObjectCategories;
 import dev.gwm.spongeplugin.library.utils.SuperObjectCategory;
 import ninja.leaping.configurate.ConfigurationNode;
 
-import java.util.Optional;
-
 public abstract class AbstractRandomManager<T extends Randomable> extends AbstractSuperObject implements RandomManager<T> {
 
     public AbstractRandomManager(ConfigurationNode node) {
         super(node);
     }
 
-    public AbstractRandomManager(Optional<String> id) {
+    public AbstractRandomManager(String id) {
         super(id);
     }
 

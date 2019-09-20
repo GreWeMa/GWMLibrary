@@ -1,3 +1,6 @@
+VERSION 2.2
+* All Super Objects are now required to have an id
+
 VERSION 2.1
 * Add `ColorHexSerializer`
 * Refactor `SpongePlugin`

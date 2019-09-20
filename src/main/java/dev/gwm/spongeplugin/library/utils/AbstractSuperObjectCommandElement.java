@@ -33,7 +33,7 @@ public abstract class AbstractSuperObjectCommandElement extends CommandElement {
                     filter(categoryFilter()).
                     filter(giveableFilter()).
                     filter(typeFilter()).
-                    map(entry -> entry.id().get()).
+                    map(SuperObject::id).
                     collect(Collectors.toList());
         } else {
             return Collections.emptyList();
@@ -43,11 +43,11 @@ public abstract class AbstractSuperObjectCommandElement extends CommandElement {
     protected abstract Collection<? extends SuperObject> getSuperObjects();
 
     private Predicate<? super SuperObject> idFilter(String arg) {
-        return superObject -> superObject.id().isPresent() && superObject.id().get().startsWith(arg);
+        return superObject -> superObject.id().startsWith(arg);
     }
 
     protected Predicate<? super SuperObject> permissionFilter(CommandSource source) {
-        return superObject -> source.hasPermission("gwm_library.tab_completion." + superObject.id().get());
+        return superObject -> source.hasPermission("gwm_library.tab_completion." + superObject.id());
     }
 
     protected abstract Predicate<? super SuperObject> categoryFilter();

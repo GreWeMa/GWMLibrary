@@ -16,7 +16,7 @@ public final class WeightRandomManager extends AbstractRandomManager<WeightRando
         super(node);
     }
 
-    public WeightRandomManager(Optional<String> id) {
+    public WeightRandomManager(String id) {
         super(id);
     }
 

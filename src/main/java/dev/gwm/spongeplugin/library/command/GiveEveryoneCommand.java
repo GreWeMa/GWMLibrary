@@ -22,7 +22,7 @@ public class GiveEveryoneCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource source, CommandContext args) {
         SuperObject superObject = args.<SuperObject>getOne(Text.of("super-object")).get();
-        String superObjectId = superObject.id().get();
+        String superObjectId = superObject.id();
         Giveable giveable = (Giveable) superObject;
         int amount = args.<Integer>getOne(Text.of("amount")).orElse(1);
         boolean force = args.hasAny("f");

@@ -5,7 +5,6 @@ import org.spongepowered.api.service.permission.Subject;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbsoluteRandomManager extends AbstractRandomManager<AbsoluteRandomManager.AbsoluteRandomable> {
@@ -18,7 +17,7 @@ public class AbsoluteRandomManager extends AbstractRandomManager<AbsoluteRandomM
         super(node);
     }
 
-    public AbsoluteRandomManager(Optional<String> id) {
+    public AbsoluteRandomManager(String id) {
         super(id);
     }
 

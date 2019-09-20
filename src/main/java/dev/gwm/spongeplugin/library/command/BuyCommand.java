@@ -41,7 +41,7 @@ public class BuyCommand implements CommandExecutor {
         Player player = (Player) source;
         UUID uuid = player.getUniqueId();
         SuperObject superObject = args.<SuperObject>getOne(Text.of("super-object")).get();
-        String superObjectId = superObject.id().get();
+        String superObjectId = superObject.id();
         Giveable giveable = (Giveable) superObject;
         int amount = args.<Integer>getOne(Text.of("amount")).orElse(1);
         if (!player.hasPermission("gwm_library.command.buy." + superObjectId)) {

@@ -15,7 +15,7 @@ public final class LevelRandomManager extends AbstractRandomManager<LevelRandomM
         super(node);
     }
 
-    public LevelRandomManager(Optional<String> id) {
+    public LevelRandomManager(String id) {
         super(id);
     }
 
@@ -64,8 +64,7 @@ public final class LevelRandomManager extends AbstractRandomManager<LevelRandomM
             }
         }
         int level;
-        while (!sortedRandomables.containsKey(level = getRandomIntLevel())) {
-        }
+        while (!sortedRandomables.containsKey(level = getRandomIntLevel())) {}
         List<R> actualRandomables = sortedRandomables.get(level);
         R randomable = actualRandomables.get(ThreadLocalRandom.current().nextInt(actualRandomables.size()));
         if (randomable.isPrefetch()) {
