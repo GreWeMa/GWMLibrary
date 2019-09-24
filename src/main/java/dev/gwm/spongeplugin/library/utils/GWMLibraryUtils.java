@@ -7,10 +7,19 @@ import de.randombyte.holograms.api.HologramsService;
 import dev.gwm.spongeplugin.library.GWMLibrary;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.SimpleConfigurationNode;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.NotePitch;
+import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.effect.particle.ParticleOptions;
+import org.spongepowered.api.effect.particle.ParticleType;
+import org.spongepowered.api.effect.potion.PotionEffectType;
+import org.spongepowered.api.item.FireworkEffect;
+import org.spongepowered.api.item.FireworkShape;
 import org.spongepowered.api.item.enchantment.Enchantment;
 import org.spongepowered.api.item.enchantment.EnchantmentType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -18,6 +27,8 @@ import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.util.Color;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.ChunkTicketManager;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -168,25 +179,21 @@ public final class GWMLibraryUtils {
     }
 
     public static HologramSettings parseHologramSettings(ConfigurationNode node,
-                                                         Vector3d defaultOffset, double defaultMultilineDistance) {
+                                                         Vector3d defaultOffset, double defaultMultilineDistance) throws ObjectMappingException {
         ConfigurationNode linesNode = node.getNode("LINES");
         ConfigurationNode offsetNode = node.getNode("OFFSET");
         ConfigurationNode multilineDistanceNode = node.getNode("MULTILINE_DISTANCE");
         if (linesNode.isVirtual()) {
             throw new IllegalArgumentException("LINES node does not exist!");
         }
-        try {
-            List<Text> lines = linesNode.getList(TypeToken.of(Text.class));
-            Vector3d offset = offsetNode.isVirtual() ?
-                    defaultOffset :
-                    parseVector3d(offsetNode);
-            double multilineDistance = multilineDistanceNode.isVirtual() ?
-                    defaultMultilineDistance :
-                    multilineDistanceNode.getDouble();
-            return new HologramSettings(lines, offset, multilineDistance);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse hologram settings!", e);
-        }
+        List<Text> lines = linesNode.getList(TypeToken.of(Text.class));
+        Vector3d offset = offsetNode.isVirtual() ?
+                defaultOffset :
+                parseVector3d(offsetNode);
+        double multilineDistance = multilineDistanceNode.isVirtual() ?
+                defaultMultilineDistance :
+                multilineDistanceNode.getDouble();
+        return new HologramSettings(lines, offset, multilineDistance);
     }
 
     public static HologramSettings parseHologramSettings(ConfigurationNode node,
@@ -200,19 +207,108 @@ public final class GWMLibraryUtils {
         }
     }
 
-    public static Enchantment parseEnchantment(ConfigurationNode node) {
+    public static FireworkEffect parseFireworkEffect(ConfigurationNode node) throws ObjectMappingException {
+        ConfigurationNode trailNode = node.getNode("TRAIL");
+        ConfigurationNode flickerNode = node.getNode("FLICKER");
+        ConfigurationNode colorsNode = node.getNode("COLORS");
+        ConfigurationNode fadesNode = node.getNode("FADES");
+        ConfigurationNode shapeNode = node.getNode("SHAPE");
+        FireworkEffect.Builder builder = FireworkEffect.builder();
+        if (!trailNode.isVirtual()) {
+            builder.trail(trailNode.getBoolean());
+        }
+        if (!flickerNode.isVirtual()) {
+            builder.flicker(flickerNode.getBoolean());
+        }
+        if (!colorsNode.isVirtual()) {
+            List<Color> colors = new ArrayList<>();
+            for (ConfigurationNode colorNode : colorsNode.getChildrenList()) {
+                colors.add(colorNode.getValue(TypeToken.of(Color.class)));
+            }
+            builder.colors(colors);
+        }
+        if (!fadesNode.isVirtual()) {
+            List<Color> fades = new ArrayList<>();
+            for (ConfigurationNode fadeNode : fadesNode.getChildrenList()) {
+                fades.add(fadeNode.getValue(TypeToken.of(Color.class)));
+            }
+            builder.fades(fades);
+        }
+        if (!shapeNode.isVirtual()) {
+            builder.shape(shapeNode.getValue(TypeToken.of(FireworkShape.class)));
+        }
+        return builder.build();
+    }
+
+    public static ParticleEffect parseParticleEffect(ConfigurationNode node) throws ObjectMappingException {
+        ConfigurationNode particleTypeNode = node.getNode("PARTICLE_TYPE");
+        ConfigurationNode blockStateNode = node.getNode("BLOCK_STATE");
+        ConfigurationNode colorNode = node.getNode("COLOR");
+        ConfigurationNode directionNode = node.getNode("DIRECTION");
+        ConfigurationNode fireworkEffectsNode = node.getNode("FIREWORK_EFFECTS");
+        ConfigurationNode itemStackSnapshotNode = node.getNode("ITEM_STACK_SNAPSHOT");
+        ConfigurationNode noteNode = node.getNode("NOTE");
+        ConfigurationNode offsetNode = node.getNode("OFFSET");
+        ConfigurationNode potionEffectTypeNode = node.getNode("POTION_EFFECT_TYPE");
+        ConfigurationNode quantityNode = node.getNode("QUANTITY");
+        ConfigurationNode scaleNode = node.getNode("SCALE");
+        ConfigurationNode slowHorizontalVelocityNode = node.getNode("SLOW_HORIZONTAL_VELOCITY");
+        ConfigurationNode velocityNode = node.getNode("VELOCITY");
+        ParticleEffect.Builder builder = ParticleEffect.builder();
+        ParticleType particleType = particleTypeNode.getValue(TypeToken.of(ParticleType.class));
+        builder.type(particleType);
+        if (!blockStateNode.isVirtual()) {
+            builder.option(ParticleOptions.BLOCK_STATE, blockStateNode.getValue(TypeToken.of(BlockState.class)));
+        }
+        if (!colorNode.isVirtual()) {
+            builder.option(ParticleOptions.COLOR, colorNode.getValue(TypeToken.of(Color.class)));
+        }
+        if (!directionNode.isVirtual()) {
+            builder.option(ParticleOptions.DIRECTION, Direction.valueOf(directionNode.getString()));
+        }
+        if (!fireworkEffectsNode.isVirtual()) {
+            List<FireworkEffect> fireworkEffects = new ArrayList<>();
+            for (ConfigurationNode fireworkEffectNode : fireworkEffectsNode.getChildrenList()) {
+                fireworkEffects.add(parseFireworkEffect(fireworkEffectNode));
+            }
+            builder.option(ParticleOptions.FIREWORK_EFFECTS, fireworkEffects);
+        }
+        if (!itemStackSnapshotNode.isVirtual()) {
+            builder.option(ParticleOptions.ITEM_STACK_SNAPSHOT, GWMLibraryUtils.parseItem(itemStackSnapshotNode).createSnapshot());
+        }
+        if (!noteNode.isVirtual()) {
+            builder.option(ParticleOptions.NOTE, noteNode.getValue(TypeToken.of(NotePitch.class)));
+        }
+        if (!offsetNode.isVirtual()) {
+            builder.option(ParticleOptions.OFFSET, GWMLibraryUtils.parseVector3d(offsetNode));
+        }
+        if (!potionEffectTypeNode.isVirtual()) {
+            builder.option(ParticleOptions.POTION_EFFECT_TYPE, potionEffectTypeNode.getValue(TypeToken.of(PotionEffectType.class)));
+        }
+        if (!quantityNode.isVirtual()) {
+            builder.option(ParticleOptions.QUANTITY, quantityNode.getInt());
+        }
+        if (!scaleNode.isVirtual()) {
+            builder.option(ParticleOptions.SCALE, scaleNode.getDouble());
+        }
+        if (!slowHorizontalVelocityNode.isVirtual()) {
+            builder.option(ParticleOptions.SLOW_HORIZONTAL_VELOCITY, slowHorizontalVelocityNode.getBoolean());
+        }
+        if (!velocityNode.isVirtual()) {
+            builder.option(ParticleOptions.VELOCITY, GWMLibraryUtils.parseVector3d(velocityNode));
+        }
+        return builder.build();
+    }
+
+    public static Enchantment parseEnchantment(ConfigurationNode node) throws ObjectMappingException {
         ConfigurationNode enchantmentNode = node.getNode("ENCHANTMENT");
         ConfigurationNode levelNode = node.getNode("LEVEL");
         if (enchantmentNode.isVirtual()) {
             throw new IllegalArgumentException("ENCHANTMENT node does not exist!");
         }
-        try {
-            EnchantmentType type = enchantmentNode.getValue(TypeToken.of(EnchantmentType.class));
-            int level = levelNode.getInt(1);
-            return Enchantment.of(type, level);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse enchantment!", e);
-        }
+        EnchantmentType type = enchantmentNode.getValue(TypeToken.of(EnchantmentType.class));
+        int level = levelNode.getInt(1);
+        return Enchantment.of(type, level);
     }
 
     public static void writeEnchantment(Enchantment enchantment, ConfigurationNode node) {
@@ -232,67 +328,63 @@ public final class GWMLibraryUtils {
         node.setValue(enchantmentNodes);
     }
 
-    public static ItemStack parseItem(ConfigurationNode node) {
-        try {
-            ConfigurationNode itemTypeNode = node.getNode("ITEM_TYPE");
-            ConfigurationNode quantityNode = node.getNode("QUANTITY");
-            ConfigurationNode subIdNode = node.getNode("SUB_ID"); //To be removed in Sponge for 1.13
-            ConfigurationNode nbtNode = node.getNode("NBT");
-            ConfigurationNode durabilityNode = node.getNode("DURABILITY");
-            ConfigurationNode displayNameNode = node.getNode("DISPLAY_NAME");
-            ConfigurationNode loreNode = node.getNode("LORE");
-            ConfigurationNode enchantmentsNode = node.getNode("ENCHANTMENTS");
-            ConfigurationNode hideEnchantmentsNode = node.getNode("HIDE_ENCHANTMENTS");
-            ConfigurationNode hideAttributesNode = node.getNode("HIDE_ATTRIBUTES");
-            if (itemTypeNode.isVirtual()) {
-                throw new IllegalArgumentException("ITEM_TYPE node does not exist!");
-            }
-            //Mega-shit-code start
-            ConfigurationNode tempNode = SimpleConfigurationNode.root();
-            tempNode.getNode("ItemType").setValue(itemTypeNode.getString());
-            tempNode.getNode("UnsafeDamage").setValue(subIdNode.getInt(0));
-            tempNode.getNode("Count").setValue(quantityNode.getInt(1));
-            ItemStack item = tempNode.getValue(TypeToken.of(ItemStack.class));
-            //Mega-shit-code end; Another not good code start
-            if (!nbtNode.isVirtual()) {
-                LinkedHashMap nbtMap = (LinkedHashMap) nbtNode.getValue();
-                if (item.toContainer().get(DataQuery.of("UnsafeData")).isPresent()) {
-                    Map unsafeDataMap = item.toContainer().getMap(DataQuery.of("UnsafeData")).get();
-                    nbtMap.putAll(unsafeDataMap);
-                }
-                DataContainer container = item.toContainer().set(DataQuery.of("UnsafeData"), nbtMap);
-                item = ItemStack.builder().fromContainer(container).build();
-            }
-            //Another not good code end
-            if (!durabilityNode.isVirtual()) {
-                int durability = durabilityNode.getInt();
-                item.offer(Keys.ITEM_DURABILITY, durability);
-            }
-            if (!displayNameNode.isVirtual()) {
-                Text displayName = displayNameNode.getValue(TypeToken.of(Text.class));
-                item.offer(Keys.DISPLAY_NAME, displayName);
-            }
-            if (!loreNode.isVirtual()) {
-                List<Text> lore = loreNode.getList(TypeToken.of(Text.class));
-                item.offer(Keys.ITEM_LORE, lore);
-            }
-            if (!enchantmentsNode.isVirtual()) {
-                List<Enchantment> itemEnchantments = new ArrayList<>();
-                for (ConfigurationNode enchantment_node : enchantmentsNode.getChildrenList()) {
-                    itemEnchantments.add(parseEnchantment(enchantment_node));
-                }
-                item.offer(Keys.ITEM_ENCHANTMENTS, itemEnchantments);
-            }
-            if (!hideEnchantmentsNode.isVirtual()) {
-                item.offer(Keys.HIDE_ENCHANTMENTS, hideEnchantmentsNode.getBoolean());
-            }
-            if (!hideAttributesNode.isVirtual()) {
-                item.offer(Keys.HIDE_ATTRIBUTES, hideAttributesNode.getBoolean());
-            }
-            return item;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse item!", e);
+    public static ItemStack parseItem(ConfigurationNode node) throws ObjectMappingException {
+        ConfigurationNode itemTypeNode = node.getNode("ITEM_TYPE");
+        ConfigurationNode quantityNode = node.getNode("QUANTITY");
+        ConfigurationNode subIdNode = node.getNode("SUB_ID"); //To be removed in Sponge for 1.13
+        ConfigurationNode nbtNode = node.getNode("NBT");
+        ConfigurationNode durabilityNode = node.getNode("DURABILITY");
+        ConfigurationNode displayNameNode = node.getNode("DISPLAY_NAME");
+        ConfigurationNode loreNode = node.getNode("LORE");
+        ConfigurationNode enchantmentsNode = node.getNode("ENCHANTMENTS");
+        ConfigurationNode hideEnchantmentsNode = node.getNode("HIDE_ENCHANTMENTS");
+        ConfigurationNode hideAttributesNode = node.getNode("HIDE_ATTRIBUTES");
+        if (itemTypeNode.isVirtual()) {
+            throw new IllegalArgumentException("ITEM_TYPE node does not exist!");
         }
+        //Mega-shit-code start
+        ConfigurationNode tempNode = SimpleConfigurationNode.root();
+        tempNode.getNode("ItemType").setValue(itemTypeNode.getString());
+        tempNode.getNode("UnsafeDamage").setValue(subIdNode.getInt(0));
+        tempNode.getNode("Count").setValue(quantityNode.getInt(1));
+        ItemStack item = tempNode.getValue(TypeToken.of(ItemStack.class));
+        //Mega-shit-code end; Another not good code start
+        if (!nbtNode.isVirtual()) {
+            LinkedHashMap nbtMap = (LinkedHashMap) nbtNode.getValue();
+            if (item.toContainer().get(DataQuery.of("UnsafeData")).isPresent()) {
+                Map unsafeDataMap = item.toContainer().getMap(DataQuery.of("UnsafeData")).get();
+                nbtMap.putAll(unsafeDataMap);
+            }
+            DataContainer container = item.toContainer().set(DataQuery.of("UnsafeData"), nbtMap);
+            item = ItemStack.builder().fromContainer(container).build();
+        }
+        //Another not good code end
+        if (!durabilityNode.isVirtual()) {
+            int durability = durabilityNode.getInt();
+            item.offer(Keys.ITEM_DURABILITY, durability);
+        }
+        if (!displayNameNode.isVirtual()) {
+            Text displayName = displayNameNode.getValue(TypeToken.of(Text.class));
+            item.offer(Keys.DISPLAY_NAME, displayName);
+        }
+        if (!loreNode.isVirtual()) {
+            List<Text> lore = loreNode.getList(TypeToken.of(Text.class));
+            item.offer(Keys.ITEM_LORE, lore);
+        }
+        if (!enchantmentsNode.isVirtual()) {
+            List<Enchantment> itemEnchantments = new ArrayList<>();
+            for (ConfigurationNode enchantment_node : enchantmentsNode.getChildrenList()) {
+                itemEnchantments.add(parseEnchantment(enchantment_node));
+            }
+            item.offer(Keys.ITEM_ENCHANTMENTS, itemEnchantments);
+        }
+        if (!hideEnchantmentsNode.isVirtual()) {
+            item.offer(Keys.HIDE_ENCHANTMENTS, hideEnchantmentsNode.getBoolean());
+        }
+        if (!hideAttributesNode.isVirtual()) {
+            item.offer(Keys.HIDE_ATTRIBUTES, hideAttributesNode.getBoolean());
+        }
+        return item;
     }
 
     public static void writeItemStack(ItemStack item, boolean saveNbt, ConfigurationNode node) {

@@ -1,3 +1,6 @@
+VERSION 2.3
+* Add `parseParticleEffect(ConfigurationNode)` and `parseFireworkEffect(ConfigurationNode)` methods to `GWMLibraryUtils`
+
 VERSION 2.2
 * All Super Objects are now required to have an id
 
