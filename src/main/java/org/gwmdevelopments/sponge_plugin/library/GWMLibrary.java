@@ -25,7 +25,7 @@ import java.util.Optional;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "1.3.4",
+        version = "lts-1.3.5",
         description = "Necessary library to run plugins developed by GWM!",
         dependencies = {
                 @Dependency(id = "holograms", optional = true)
@@ -36,13 +36,13 @@ import java.util.Optional;
                          * Discord(GWM#2192)*/})
 public class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 1, 3, 4);
+    public static final Version VERSION = new Version("lts", 1, 3, 5);
 
     private static GWMLibrary instance = null;
 
     public static GWMLibrary getInstance() {
         if (instance == null) {
-            throw new RuntimeException("GWMLibrary not initialized!");
+            throw new RuntimeException("GWMLibrary is not initialized!");
         }
         return instance;
     }
@@ -66,8 +66,6 @@ public class GWMLibrary extends SpongePlugin {
 
     private Optional<HologramsService> hologramsService = Optional.empty();
 
-    private boolean checkUpdates = true;
-
     @Listener
     public void onConstruction(GameConstructionEvent event) {
         instance = this;
@@ -81,11 +79,7 @@ public class GWMLibrary extends SpongePlugin {
         cause = Cause.of(EventContext.empty(), container);
         config = new Config(this, "config.conf", false);
         languageConfig = new Config(this, "language.conf", false);
-        loadConfigValues();
         language = new Language(this);
-        if (checkUpdates) {
-            checkUpdates();
-        }
         logger.info("\"GamePreInitialization\" completed!");
     }
 
@@ -124,18 +118,10 @@ public class GWMLibrary extends SpongePlugin {
     public void reload() {
         config.reload();
         languageConfig.reload();
-        loadConfigValues();
         cause = Cause.of(EventContext.empty(), container);
         hologramsService = Optional.empty();
         loadHologramsService();
-        if (checkUpdates) {
-            checkUpdates();
-        }
         logger.info("Plugin has been reloaded.");
-    }
-
-    private void loadConfigValues() {
-        checkUpdates = config.getNode("CHECK_UPDATES").getBoolean(true);
     }
 
     private boolean loadHologramsService() {
@@ -193,9 +179,5 @@ public class GWMLibrary extends SpongePlugin {
     @Override
     public Language getLanguage() {
         return language;
-    }
-
-    public boolean isCheckUpdates() {
-        return checkUpdates;
     }
 }
