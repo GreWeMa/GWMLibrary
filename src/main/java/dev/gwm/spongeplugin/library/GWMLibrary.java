@@ -35,7 +35,7 @@ import java.util.Set;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "2.3",
+        version = "2.4",
         description = "Library with Super Objects and other utilities",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -47,7 +47,7 @@ import java.util.Set;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 2, 3);
+    public static final Version VERSION = new Version(null, 2, 4);
 
     private static GWMLibrary instance = null;
 
@@ -83,7 +83,6 @@ public final class GWMLibrary extends SpongePlugin {
     private Optional<ChunkTicketManager> chunkTicketManager = Optional.empty();
     private SuperObjectsServiceImpl superObjectsService;
 
-    private boolean checkUpdates = true;
     private boolean logRegisteredCategories = true;
     private boolean logRegisteredIdentifiers = true;
     private boolean logLoadedSavedSuperObjects = true;
@@ -110,9 +109,6 @@ public final class GWMLibrary extends SpongePlugin {
                 assetManager.getAsset(this, "saved_items.conf"), true, false);
         loadConfigValues();
         language = new Language(this);
-        if (checkUpdates) {
-            checkUpdates();
-        }
         GWMLibraryCommandUtils.registerCommands(this);
         initializeSuperObjectsService();
         logger.info("PreInitialization completed!");
@@ -154,9 +150,6 @@ public final class GWMLibrary extends SpongePlugin {
         savedSuperObjectsConfig.reload();
         savedItemsConfig.reload();
         loadConfigValues();
-        if (checkUpdates) {
-            checkUpdates();
-        }
         superObjectsService.shutdownSavedSuperObjects();
         loadSavedSuperObjects();
         logger.info("Plugin has been reloaded.");
@@ -164,11 +157,9 @@ public final class GWMLibrary extends SpongePlugin {
 
     private void loadConfigValues() {
         try {
-            ConfigurationNode checkUpdatesNode = config.getNode("CHECK_UPDATES");
             ConfigurationNode logRegisteredCategoriesNode = config.getNode("LOG_REGISTERED_CATEGORIES");
             ConfigurationNode logRegisteredIdentifiersNode = config.getNode("LOG_REGISTERED_IDENTIFIERS");
             ConfigurationNode logLoadedSavedSuperObjectsNode = config.getNode("LOG_LOADED_SAVED_SUPER_OBJECTS");
-            checkUpdates = checkUpdatesNode.getBoolean(true);
             logRegisteredCategories = logRegisteredCategoriesNode.getBoolean(true);
             logRegisteredIdentifiers = logRegisteredIdentifiersNode.getBoolean(true);
             logLoadedSavedSuperObjects = logLoadedSavedSuperObjectsNode.getBoolean(true);
@@ -337,10 +328,6 @@ public final class GWMLibrary extends SpongePlugin {
     @Override
     public Language getLanguage() {
         return language;
-    }
-
-    public boolean isCheckUpdates() {
-        return checkUpdates;
     }
 
     public boolean isLogRegisteredCategories() {
