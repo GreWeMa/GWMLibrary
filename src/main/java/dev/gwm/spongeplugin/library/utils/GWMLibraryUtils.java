@@ -10,6 +10,7 @@ import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.key.Keys;
@@ -36,6 +37,7 @@ import org.spongepowered.api.world.World;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class GWMLibraryUtils {
 
@@ -497,5 +499,27 @@ public final class GWMLibraryUtils {
                     append(iterator.next());
         }
         return builder.toString();
+    }
+
+    //I suspect that this is not how one is supposed to program in functional style, is it?..
+    public static List<Text> getMessage(CommandSource source, Optional<List<String>> custom,
+                                        Language language, String defaultMessagePath, List<Map.Entry<String, ?>> entries) {
+        return custom.
+                map(Collection::stream).
+                map(customMessage -> {
+                    Stream<Map.Entry<String, ? >> escapedEntries = entries.
+                            stream().
+                            map(entry -> new Pair<>("%" + entry.getKey() + "%", entry.getValue()));
+                    return customMessage.
+                            map(string -> escapedEntries.
+                                    reduce("", (s, e) -> s.replace(e.getKey(), e.getValue().toString()), String::concat));
+                }).
+                map(customMessage -> customMessage.map(TextSerializers.FORMATTING_CODE::deserialize)).
+                map(customMessage -> GWMLibrary.getInstance().getPlaceholderService().
+                        map(placeholderService -> customMessage.
+                                map(text -> placeholderService.replacePlaceholders(text, source, null))).
+                        orElse(customMessage)).
+                map(customMessage -> customMessage.collect(Collectors.toList())).
+                orElse(language.getTranslation(defaultMessagePath, entries, source));
     }
 }

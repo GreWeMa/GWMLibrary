@@ -42,7 +42,7 @@ public class Language {
                         load());
             } else {
                 defaultNode = Optional.empty();
-                plugin.getLogger().warn("Plugin \"" + plugin.getContainer().getId() + "\" does not have default translation asset!");
+                GWMLibrary.getInstance().getLogger().warn("Plugin \"" + plugin.getContainer().getId() + "\" does not have default translation asset!");
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize Language!", e);

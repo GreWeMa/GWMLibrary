@@ -1,3 +1,7 @@
+VERSION 2.5
+* Add `getMessage` to `GWMLibraryUtils`
+* Now the plugin uses its own logger to log message about a plugin not having default translation asset
+
 VERSION 2.4
 * Remove update checker (thanks to Ore developers for their genius idea with authentication...)
 * Update comments in the translations
