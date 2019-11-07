@@ -4,7 +4,11 @@ import dev.gwm.spongeplugin.library.superobject.SuperObject;
 import ninja.leaping.configurate.ConfigurationNode;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class SuperObjectsServiceImpl implements SuperObjectsService {
 
@@ -47,10 +51,20 @@ public final class SuperObjectsServiceImpl implements SuperObjectsService {
     @Override
     public <T extends SuperObject> T create(SuperObjectCategory<T> category, ConfigurationNode node, boolean save) {
         ConfigurationNode typeNode = node.getNode("TYPE");
-        if (typeNode.isVirtual()) {
-            throw new IllegalArgumentException("TYPE node does not exist!");
+        String type;
+        if (!typeNode.isVirtual()) {
+            type = typeNode.getString();
+        } else {
+            Set<SuperObjectIdentifier> identifiersSet = classes.keySet().
+                    stream().
+                    filter(identifier -> identifier.getCategory().equals(category)).
+                    collect(Collectors.toSet());
+            if (identifiersSet.size() == 1) { //If there is no ambiguity with the identifier (category has only one type)
+                type = identifiersSet.iterator().next().getType();
+            } else {
+                throw new IllegalArgumentException("TYPE node does not exist!");
+            }
         }
-        String type = typeNode.getString();
         if (type.equals(SAVED_SUPER_OBJECT_TYPE)) {
             ConfigurationNode savedIdNode = node.getNode("SAVED_ID");
             if (savedIdNode.isVirtual()) {
@@ -70,10 +84,6 @@ public final class SuperObjectsServiceImpl implements SuperObjectsService {
         }
         try {
             T superObject = (T) classes.get(identifier).getConstructor(ConfigurationNode.class).newInstance(node);
-            String id = superObject.id();
-            if (getSuperObjectById(id).isPresent()) {
-                throw new RuntimeException("Super Object id \"" + id + "\" is not unique!");
-            }
             if (save) {
                 createdSuperObjects.add(superObject);
             }
@@ -93,19 +103,16 @@ public final class SuperObjectsServiceImpl implements SuperObjectsService {
         if (categoryNode.isVirtual()) {
             throw new IllegalArgumentException("CATEGORY node does not exist!");
         }
-        if (typeNode.isVirtual()) {
-            throw new IllegalArgumentException("TYPE node does not exist!");
-        }
         if (idNode.isVirtual()) {
             throw new IllegalArgumentException("ID node does not exist!");
         }
-        if (typeNode.getString().equals("SAVED")) {
+        if (!typeNode.isVirtual() && typeNode.getString().equals("SAVED")) {
             throw new IllegalArgumentException("Saved Super Object cannot have \"SAVED\" type");
         }
         String categoryName = categoryNode.getString();
         String id = idNode.getString();
-        if (getSuperObjectById(id).isPresent()) {
-            throw new RuntimeException("Super Object id \"" + id + "\" is not unique!");
+        if (getSavedSuperObjectById(id).isPresent()) {
+            throw new RuntimeException("Saved Super Object id \"" + id + "\" is not unique!");
         }
         for (SuperObjectCategory<?> category : categories) {
             if (category.getName().equals(categoryName)) {

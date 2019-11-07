@@ -1,3 +1,7 @@
+VERSION 2.5.1
+* Use default type within category when creating a Super Object if it is not ambiguous
+* Rework `SuperObjectsService` and `SuperObjectsServiceImpl`. Created Super Objects are now not required to have unique ids
+
 VERSION 2.5
 * Add `getMessage` to `GWMLibraryUtils`
 * Now the plugin uses its own logger to log message about a plugin not having default translation asset

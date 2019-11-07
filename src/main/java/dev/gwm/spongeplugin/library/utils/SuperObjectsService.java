@@ -32,11 +32,6 @@ public interface SuperObjectsService {
 
     SuperObject load(ConfigurationNode node, boolean save);
 
-    default Optional<SuperObject> getSuperObjectById(String id) {
-        Optional<SuperObject> optionalSuperObject = getCreatedSuperObjectById(id);
-        return optionalSuperObject.isPresent() ? optionalSuperObject : getSavedSuperObjectById(id);
-    }
-
     //Removes and shutdowns all Saved Super Objects, and their internal Created Super Objects
     default void shutdownSavedSuperObjects() {
         Iterator<SuperObject> iterator = getSavedSuperObjects().iterator();

@@ -3,15 +3,9 @@ package dev.gwm.spongeplugin.library.superobject;
 import dev.gwm.spongeplugin.library.exception.IdFormatException;
 import dev.gwm.spongeplugin.library.exception.SuperObjectConstructionException;
 import dev.gwm.spongeplugin.library.utils.GWMLibraryUtils;
-import dev.gwm.spongeplugin.library.utils.SuperObjectsService;
 import ninja.leaping.configurate.ConfigurationNode;
-import org.spongepowered.api.Sponge;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractSuperObject implements SuperObject {
-
-    private static AtomicInteger ID_COUNTER = new AtomicInteger();
 
     private final String id;
 
@@ -36,11 +30,7 @@ public abstract class AbstractSuperObject implements SuperObject {
     }
 
     protected String generateId() {
-        String base = category().getName().toLowerCase() + "_";
-        SuperObjectsService superObjectsService = Sponge.getServiceManager().provide(SuperObjectsService.class).get();
-        String id;
-        while (superObjectsService.getSuperObjectById(id = base + ID_COUNTER.getAndIncrement()).isPresent()) {}
-        return id;
+        return category().getName().toLowerCase() + "_" + type().toLowerCase();
     }
 
     @Override
