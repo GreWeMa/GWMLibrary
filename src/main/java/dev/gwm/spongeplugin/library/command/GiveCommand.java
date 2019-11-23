@@ -2,8 +2,8 @@ package dev.gwm.spongeplugin.library.command;
 
 import dev.gwm.spongeplugin.library.superobject.Giveable;
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
-import dev.gwm.spongeplugin.library.utils.Language;
-import dev.gwm.spongeplugin.library.utils.Pair;
+import dev.gwm.spongeplugin.library.util.Language;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -43,11 +43,11 @@ public class GiveCommand implements CommandExecutor {
         }
         giveable.give(player, amount, force);
         source.sendMessages(language.getTranslation("SUCCESSFULLY_GAVE_SUPER_OBJECT", Arrays.asList(
-                new Pair<>("SUPER_OBJECT_ID", superObjectId),
-                new Pair<>("PLAYER_NAME", player.getName())
+                new ImmutablePair<>("SUPER_OBJECT_ID", superObjectId),
+                new ImmutablePair<>("PLAYER_NAME", player.getName())
         ), source));
         player.sendMessages(language.getTranslation("SUCCESSFULLY_GOT_SUPER_OBJECT",
-                new Pair<>("SUPER_OBJECT_ID", superObjectId),
+                new ImmutablePair<>("SUPER_OBJECT_ID", superObjectId),
                 player));
         return CommandResult.success();
     }

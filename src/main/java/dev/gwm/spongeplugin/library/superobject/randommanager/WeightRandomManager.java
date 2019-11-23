@@ -1,11 +1,15 @@
 package dev.gwm.spongeplugin.library.superobject.randommanager;
 
-import dev.gwm.spongeplugin.library.utils.Pair;
 import ninja.leaping.configurate.ConfigurationNode;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.api.service.permission.Subject;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class WeightRandomManager extends AbstractRandomManager<WeightRandomManager.WeightRandomable> {
@@ -37,7 +41,7 @@ public final class WeightRandomManager extends AbstractRandomManager<WeightRando
                     String permission = entry.getKey();
                     long permissionWeight = entry.getValue();
                     if (subject.hasPermission(permission)) {
-                        list.add(new Pair<>(permissionWeight, randomable));
+                        list.add(new ImmutablePair<>(permissionWeight, randomable));
                         foundByPermission = true;
                         break;
                     }
@@ -47,7 +51,7 @@ public final class WeightRandomManager extends AbstractRandomManager<WeightRando
                 long weight = fake ?
                         randomable.getFakeWeight().orElse(randomable.getWeight()) :
                         randomable.getWeight();
-                list.add(new Pair<>(weight, randomable));
+                list.add(new ImmutablePair<>(weight, randomable));
             }
         }
         long sum = list.stream().reduce(0L, (l, pair) -> l + pair.getKey(), Long::sum);

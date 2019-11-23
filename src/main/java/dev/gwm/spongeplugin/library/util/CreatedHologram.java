@@ -1,4 +1,4 @@
-package dev.gwm.spongeplugin.library.utils;
+package dev.gwm.spongeplugin.library.util;
 
 import de.randombyte.holograms.api.HologramsService;
 import org.spongepowered.api.world.ChunkTicketManager;

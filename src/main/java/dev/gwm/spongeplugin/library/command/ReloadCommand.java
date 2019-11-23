@@ -1,7 +1,7 @@
 package dev.gwm.spongeplugin.library.command;
 
 import dev.gwm.spongeplugin.library.GWMLibrary;
-import dev.gwm.spongeplugin.library.utils.Language;
+import dev.gwm.spongeplugin.library.util.Language;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;

@@ -1,6 +1,8 @@
-package dev.gwm.spongeplugin.library.utils;
+package dev.gwm.spongeplugin.library.util.service;
 
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
+import dev.gwm.spongeplugin.library.util.SuperObjectCategory;
+import dev.gwm.spongeplugin.library.util.SuperObjectIdentifier;
 import ninja.leaping.configurate.ConfigurationNode;
 
 import java.lang.reflect.InvocationTargetException;
@@ -10,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public final class SuperObjectsServiceImpl implements SuperObjectsService {
+public final class SuperObjectServiceImpl implements SuperObjectService {
 
     private static final String SAVED_SUPER_OBJECT_TYPE = "SAVED";
 
@@ -20,8 +22,8 @@ public final class SuperObjectsServiceImpl implements SuperObjectsService {
     private Set<SuperObject> createdSuperObjects;
     private Set<SuperObject> savedSuperObjects;
 
-    public SuperObjectsServiceImpl(Set<SuperObjectCategory> categories,
-                                   Map<SuperObjectIdentifier, Class<? extends SuperObject>> classes) {
+    public SuperObjectServiceImpl(Set<SuperObjectCategory> categories,
+                                  Map<SuperObjectIdentifier, Class<? extends SuperObject>> classes) {
         this.categories = Collections.unmodifiableSet(categories);
         this.classes = Collections.unmodifiableMap(classes);
         createdSuperObjects = new HashSet<>();

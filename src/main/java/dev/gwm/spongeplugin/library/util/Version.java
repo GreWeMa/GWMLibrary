@@ -1,6 +1,7 @@
-package dev.gwm.spongeplugin.library.utils;
+package dev.gwm.spongeplugin.library.util;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Version implements Comparable<Version> {
 
@@ -8,28 +9,41 @@ public class Version implements Comparable<Version> {
     private final int[] array;
 
     public static Version parse(String string) {
-        if (string.contains("-")) {
-            String[] splited = string.split("-");
-            String prefix = splited[0];
-            String[] splited2 = splited[1].split("\\.");
-            int[] array = new int[splited2.length];
-            for (int i = 0; i < splited2.length; i++) {
-                array[i] = Integer.valueOf(splited2[i]);
+        int hyphenPosition = string.lastIndexOf('-');
+        if (hyphenPosition != -1) {
+            String prefix = string.substring(0, hyphenPosition);
+            String[] splited = string.substring(hyphenPosition + 1).split("\\.");
+            int[] array = new int[splited.length];
+            for (int i = 0; i < splited.length; i++) {
+                array[i] = Integer.parseInt(splited[i]);
             }
             return new Version(prefix, array);
         } else {
             String[] splited = string.split("\\.");
             int[] array = new int[splited.length];
             for (int i = 0; i < splited.length; i++) {
-                array[i] = Integer.valueOf(splited[i]);
+                array[i] = Integer.parseInt(splited[i]);
             }
-            return new Version(null, array);
+            return new Version("", array);
         }
     }
 
     public Version(String prefix, int... array) {
+        if (prefix == null) {
+            throw new IllegalArgumentException("prefix cannot be null!");
+        }
+        if (array == null) {
+            throw new IllegalArgumentException("array cannot be null!");
+        }
+        if (array.length == 0) {
+            throw new IllegalArgumentException("array cannot be empty!");
+        }
         this.prefix = prefix;
         this.array = array;
+    }
+
+    public Version(int... array) {
+        this("", array);
     }
 
     @Override
@@ -53,15 +67,13 @@ public class Version implements Comparable<Version> {
             return false;
         }
         Version version = (Version) o;
-        if (prefix != null ? !prefix.equals(version.prefix) : version.prefix != null) {
-            return false;
-        }
-        return Arrays.equals(array, version.array);
+        return prefix.equals(version.prefix) &&
+                Arrays.equals(array, version.array);
     }
 
     @Override
     public int hashCode() {
-        int result = prefix != null ? prefix.hashCode() : 0;
+        int result = Objects.hash(prefix);
         result = 31 * result + Arrays.hashCode(array);
         return result;
     }
@@ -69,14 +81,12 @@ public class Version implements Comparable<Version> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        if (prefix != null && !prefix.equals("")) {
+        if (!prefix.equals("")) {
             builder.append(prefix).append('-');
         }
-        for (int i = 0; i < array.length; i++) {
-            builder.append(array[i]);
-            if (i != array.length - 1) {
-                builder.append('.');
-            }
+        builder.append(array[0]);
+        for (int i = 1; i < array.length; i++) {
+            builder.append('.').append(array[i]);
         }
         return builder.toString();
     }

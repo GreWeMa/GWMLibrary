@@ -1,8 +1,9 @@
-package dev.gwm.spongeplugin.library.utils;
+package dev.gwm.spongeplugin.library.util;
 
 import dev.gwm.spongeplugin.library.GWMLibrary;
 import dev.gwm.spongeplugin.library.superobject.Giveable;
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
+import dev.gwm.spongeplugin.library.util.service.SuperObjectService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
@@ -66,7 +67,7 @@ public class SavedSuperObjectCommandElement extends AbstractSuperObjectCommandEl
     @Override
     protected SuperObject parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
         String superObjectId = args.next();
-        SuperObject superObject = Sponge.getServiceManager().provide(SuperObjectsService.class).get().
+        SuperObject superObject = Sponge.getServiceManager().provide(SuperObjectService.class).get().
                 getSavedSuperObjectById(superObjectId).
                 orElseThrow(() ->
                         new ArgumentParseException(GWMLibraryUtils.joinText(language.
@@ -100,7 +101,7 @@ public class SavedSuperObjectCommandElement extends AbstractSuperObjectCommandEl
 
     @Override
     protected Collection<SuperObject> getSuperObjects() {
-        return Sponge.getServiceManager().provide(SuperObjectsService.class).get().getSavedSuperObjects();
+        return Sponge.getServiceManager().provide(SuperObjectService.class).get().getSavedSuperObjects();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package dev.gwm.spongeplugin.library.exception;
 
-import dev.gwm.spongeplugin.library.utils.SuperObjectCategory;
+import dev.gwm.spongeplugin.library.util.SuperObjectCategory;
 
 public class SuperObjectConstructionException extends RuntimeException {
 

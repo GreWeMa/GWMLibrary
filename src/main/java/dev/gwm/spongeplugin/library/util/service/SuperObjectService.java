@@ -1,12 +1,15 @@
-package dev.gwm.spongeplugin.library.utils;
+package dev.gwm.spongeplugin.library.util.service;
 
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
+import dev.gwm.spongeplugin.library.util.SuperObjectCategory;
+import dev.gwm.spongeplugin.library.util.SuperObjectIdEqualsPredicate;
+import dev.gwm.spongeplugin.library.util.SuperObjectIdentifier;
 import ninja.leaping.configurate.ConfigurationNode;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-public interface SuperObjectsService {
+public interface SuperObjectService {
 
     Set<SuperObjectCategory> getCategories();
 

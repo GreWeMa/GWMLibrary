@@ -1,8 +1,8 @@
 package dev.gwm.spongeplugin.library.superobject.randommanager;
 
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
-import dev.gwm.spongeplugin.library.utils.GWMLibrarySuperObjectCategories;
-import dev.gwm.spongeplugin.library.utils.SuperObjectCategory;
+import dev.gwm.spongeplugin.library.util.GWMLibrarySuperObjectCategories;
+import dev.gwm.spongeplugin.library.util.SuperObjectCategory;
 import org.spongepowered.api.service.permission.Subject;
 
 import javax.annotation.Nullable;

@@ -8,7 +8,9 @@ import dev.gwm.spongeplugin.library.superobject.SuperObject;
 import dev.gwm.spongeplugin.library.superobject.randommanager.AbsoluteRandomManager;
 import dev.gwm.spongeplugin.library.superobject.randommanager.LevelRandomManager;
 import dev.gwm.spongeplugin.library.superobject.randommanager.WeightRandomManager;
-import dev.gwm.spongeplugin.library.utils.*;
+import dev.gwm.spongeplugin.library.util.*;
+import dev.gwm.spongeplugin.library.util.service.SuperObjectService;
+import dev.gwm.spongeplugin.library.util.service.SuperObjectServiceImpl;
 import me.rojo8399.placeholderapi.PlaceholderService;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.slf4j.Logger;
@@ -35,7 +37,7 @@ import java.util.Set;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "2.5.1",
+        version = "2.5.2",
         description = "Library with Super Objects and other utilities",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -47,7 +49,7 @@ import java.util.Set;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(null, 2, 5, 1);
+    public static final Version VERSION = new Version(2, 5, 2);
 
     private static GWMLibrary instance = null;
 
@@ -81,7 +83,7 @@ public final class GWMLibrary extends SpongePlugin {
     private Optional<HologramsService> hologramsService = Optional.empty();
     private Optional<PlaceholderService> placeholderService = Optional.empty();
     private Optional<ChunkTicketManager> chunkTicketManager = Optional.empty();
-    private SuperObjectsServiceImpl superObjectsService;
+    private SuperObjectServiceImpl superObjectService;
 
     private boolean logRegisteredCategories = true;
     private boolean logRegisteredIdentifiers = true;
@@ -138,7 +140,7 @@ public final class GWMLibrary extends SpongePlugin {
 
     @Listener
     public void onStopping(GameStoppingServerEvent event) {
-        superObjectsService.shutdownSavedSuperObjects();
+        superObjectService.shutdownSavedSuperObjects();
         save();
         logger.info("Stopping completed!");
     }
@@ -150,7 +152,7 @@ public final class GWMLibrary extends SpongePlugin {
         savedSuperObjectsConfig.reload();
         savedItemsConfig.reload();
         loadConfigValues();
-        superObjectsService.shutdownSavedSuperObjects();
+        superObjectService.shutdownSavedSuperObjects();
         loadSavedSuperObjects();
         logger.info("Plugin has been reloaded.");
     }
@@ -195,8 +197,8 @@ public final class GWMLibrary extends SpongePlugin {
                 logger.info("Registered identifier for \"" + value.getCanonicalName() + "\" with category \"" + category + "\" and type \"" + type + "\"");
             });
         }
-        superObjectsService = new SuperObjectsServiceImpl(categories, classes);
-        Sponge.getServiceManager().setProvider(this, SuperObjectsService.class, superObjectsService);
+        superObjectService = new SuperObjectServiceImpl(categories, classes);
+        Sponge.getServiceManager().setProvider(this, SuperObjectService.class, superObjectService);
     }
 
     private void loadSavedSuperObjects() {
@@ -204,7 +206,7 @@ public final class GWMLibrary extends SpongePlugin {
         if (!savedSuperObjectsNode.isVirtual()) {
             for (ConfigurationNode savedSuperObjectNode : savedSuperObjectsNode.getChildrenList()) {
                 try {
-                    SuperObject superObject = superObjectsService.load(savedSuperObjectNode, true);
+                    SuperObject superObject = superObjectService.load(savedSuperObjectNode, true);
                     if (logLoadedSavedSuperObjects) {
                         String category = superObject.category().getName();
                         String type = superObject.type();
@@ -278,8 +280,8 @@ public final class GWMLibrary extends SpongePlugin {
         return chunkTicketManager;
     }
 
-    public SuperObjectsService getSuperObjectsService() {
-        return superObjectsService;
+    public SuperObjectService getSuperObjectService() {
+        return superObjectService;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package dev.gwm.spongeplugin.library.utils;
+package dev.gwm.spongeplugin.library.util;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.asset.Asset;

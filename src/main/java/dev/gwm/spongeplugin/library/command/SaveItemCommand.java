@@ -1,9 +1,9 @@
 package dev.gwm.spongeplugin.library.command;
 
 import dev.gwm.spongeplugin.library.GWMLibrary;
-import dev.gwm.spongeplugin.library.utils.GWMLibraryUtils;
-import dev.gwm.spongeplugin.library.utils.Language;
-import dev.gwm.spongeplugin.library.utils.Pair;
+import dev.gwm.spongeplugin.library.util.GWMLibraryUtils;
+import dev.gwm.spongeplugin.library.util.Language;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -40,7 +40,7 @@ public class SaveItemCommand implements CommandExecutor {
         GWMLibraryUtils.writeItemStack(item, saveNbt, GWMLibrary.getInstance().getSavedItemsConfig().getNode(path));
         GWMLibrary.getInstance().getSavedItemsConfig().save();
         player.sendMessages(language.getTranslation("ITEM_SAVED_SUCCESSFULLY",
-                new Pair<>("PATH", path),
+                new ImmutablePair<>("PATH", path),
                 player));
         return CommandResult.success();
     }

@@ -1,6 +1,6 @@
 package dev.gwm.spongeplugin.library.superobject;
 
-import dev.gwm.spongeplugin.library.utils.SuperObjectCategory;
+import dev.gwm.spongeplugin.library.util.SuperObjectCategory;
 
 import java.util.HashSet;
 import java.util.Set;

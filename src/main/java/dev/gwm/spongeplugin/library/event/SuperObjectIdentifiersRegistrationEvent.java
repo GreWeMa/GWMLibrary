@@ -1,7 +1,7 @@
 package dev.gwm.spongeplugin.library.event;
 
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
-import dev.gwm.spongeplugin.library.utils.SuperObjectIdentifier;
+import dev.gwm.spongeplugin.library.util.SuperObjectIdentifier;
 import org.spongepowered.api.event.Event;
 
 public interface SuperObjectIdentifiersRegistrationEvent extends Event {

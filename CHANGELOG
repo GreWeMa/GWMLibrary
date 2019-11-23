@@ -1,3 +1,10 @@
+VERSION 2.5.2
+* Use `org.apache.commons.lang3.tuple` instead of implementing our own
+* Rename `utils` package to `util`
+* Rename `SuperObjectsService` and `SuperObjectsServiceImpl` to `SuperObjectService` and `dev.gwm.spongeplugin.library.util.service.SuperObjectServiceImpl` accordingly
+* Move `SuperObjectService` and `dev.gwm.spongeplugin.library.util.service.SuperObjectServiceImpl` from `util` package to `util.service`
+* Refactor `Version`
+
 VERSION 2.5.1
 * Use default type within category when creating a Super Object if it is not ambiguous
 * Rework `SuperObjectsService` and `SuperObjectsServiceImpl`. Created Super Objects are now not required to have unique ids

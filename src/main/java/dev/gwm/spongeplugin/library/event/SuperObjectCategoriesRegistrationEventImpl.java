@@ -1,7 +1,7 @@
 package dev.gwm.spongeplugin.library.event;
 
 import dev.gwm.spongeplugin.library.GWMLibrary;
-import dev.gwm.spongeplugin.library.utils.SuperObjectCategory;
+import dev.gwm.spongeplugin.library.util.SuperObjectCategory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;
 

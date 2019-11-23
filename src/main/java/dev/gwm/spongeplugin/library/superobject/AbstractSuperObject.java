@@ -2,7 +2,7 @@ package dev.gwm.spongeplugin.library.superobject;
 
 import dev.gwm.spongeplugin.library.exception.IdFormatException;
 import dev.gwm.spongeplugin.library.exception.SuperObjectConstructionException;
-import dev.gwm.spongeplugin.library.utils.GWMLibraryUtils;
+import dev.gwm.spongeplugin.library.util.GWMLibraryUtils;
 import ninja.leaping.configurate.ConfigurationNode;
 
 public abstract class AbstractSuperObject implements SuperObject {

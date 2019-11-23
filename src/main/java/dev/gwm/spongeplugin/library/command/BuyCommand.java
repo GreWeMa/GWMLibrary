@@ -3,8 +3,8 @@ package dev.gwm.spongeplugin.library.command;
 import dev.gwm.spongeplugin.library.GWMLibrary;
 import dev.gwm.spongeplugin.library.superobject.Giveable;
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
-import dev.gwm.spongeplugin.library.utils.Language;
-import dev.gwm.spongeplugin.library.utils.Pair;
+import dev.gwm.spongeplugin.library.util.Language;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -63,7 +63,7 @@ public class BuyCommand implements CommandExecutor {
         Optional<BigDecimal> optionalPrice = giveable.getPrice();
         if (!optionalPrice.isPresent()) {
             player.sendMessages(language.getTranslation("SAVED_SUPER_OBJECT_IS_NOT_FOR_SALE",
-                    new Pair<>("SUPER_OBJECT_ID", superObjectId),
+                    new ImmutablePair<>("SUPER_OBJECT_ID", superObjectId),
                     player));
             return CommandResult.empty();
         }
@@ -73,20 +73,20 @@ public class BuyCommand implements CommandExecutor {
         BigDecimal balance = playerAccount.getBalance(currency);
         if (balance.compareTo(totalPrice) < 0) {
             player.sendMessages(language.getTranslation("HAVE_NOT_ENOUGH_MONEY", Arrays.asList(
-                    new Pair<>("CURRENCY_ID", currency.getId()),
-                    new Pair<>("CURRENCY_NAME", currency.getName()),
-                    new Pair<>("CURRENCY_DISPLAY_NAME", TextSerializers.FORMATTING_CODE.serialize(currency.getDisplayName())),
-                    new Pair<>("CURRENCY_SYMBOL", TextSerializers.FORMATTING_CODE.serialize(currency.getSymbol())),
-                    new Pair<>("REQUIRED_AMOUNT", totalPrice),
-                    new Pair<>("BALANCE", balance),
-                    new Pair<>("DIFFERENCE", totalPrice.subtract(balance))
+                    new ImmutablePair<>("CURRENCY_ID", currency.getId()),
+                    new ImmutablePair<>("CURRENCY_NAME", currency.getName()),
+                    new ImmutablePair<>("CURRENCY_DISPLAY_NAME", TextSerializers.FORMATTING_CODE.serialize(currency.getDisplayName())),
+                    new ImmutablePair<>("CURRENCY_SYMBOL", TextSerializers.FORMATTING_CODE.serialize(currency.getSymbol())),
+                    new ImmutablePair<>("REQUIRED_AMOUNT", totalPrice),
+                    new ImmutablePair<>("BALANCE", balance),
+                    new ImmutablePair<>("DIFFERENCE", totalPrice.subtract(balance))
             ), player));
             return CommandResult.empty();
         }
         playerAccount.withdraw(currency, totalPrice, cause);
         giveable.give(player, amount, false);
         player.sendMessages(language.getTranslation("SUCCESSFUL_PURCHASE_OF_SAVED_SUPER_OBJECT",
-                new Pair<>("SUPER_OBJECT_ID", superObjectId),
+                new ImmutablePair<>("SUPER_OBJECT_ID", superObjectId),
                 player));
         return CommandResult.success();
     }

@@ -1,4 +1,4 @@
-package dev.gwm.spongeplugin.library.utils;
+package dev.gwm.spongeplugin.library.util;
 
 import com.google.common.reflect.TypeToken;
 import dev.gwm.spongeplugin.library.GWMLibrary;

@@ -1,4 +1,4 @@
-package dev.gwm.spongeplugin.library.utils;
+package dev.gwm.spongeplugin.library.util;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.text.Text;
