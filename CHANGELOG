@@ -1,3 +1,11 @@
+VERSION 2.5.3
+* Remove `Pair`
+* Remove method `save` from `SpongePlugin`
+* Remove '/gwmlibrary save' command
+* Fix `GWMLibraryUtils::getMessage`
+* Code refactoring
+* Fix getting NoClassDefFoundError if PlaceholderAPI is not installed
+
 VERSION 2.5.2
 * Use `org.apache.commons.lang3.tuple` instead of implementing our own
 * Rename `utils` package to `util`

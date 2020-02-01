@@ -4,6 +4,7 @@ import dev.gwm.spongeplugin.library.GWMLibrary;
 import dev.gwm.spongeplugin.library.superobject.Giveable;
 import dev.gwm.spongeplugin.library.superobject.SuperObject;
 import dev.gwm.spongeplugin.library.util.service.SuperObjectService;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
@@ -72,28 +73,28 @@ public class SavedSuperObjectCommandElement extends AbstractSuperObjectCommandEl
                 orElseThrow(() ->
                         new ArgumentParseException(GWMLibraryUtils.joinText(language.
                                 getTranslation("SAVED_SUPER_OBJECT_IS_NOT_FOUND",
-                                        new Pair<>("SUPER_OBJECT_ID", superObjectId),
+                                        new ImmutablePair<>("SUPER_OBJECT_ID", superObjectId),
                                         source)), superObjectId, 0));
         if (category.isPresent() && !category.get().equals(superObject.category())) {
             throw new ArgumentParseException(GWMLibraryUtils.joinText(language.
                     getTranslation("SAVED_SUPER_OBJECT_IS_NOT_OF_REQUIRED_CATEGORY", Arrays.asList(
-                            new Pair<>("SUPER_OBJECT_ID", superObjectId),
-                            new Pair<>("SUPER_OBJECT_CATEGORY", superObject.category().getName()),
-                            new Pair<>("REQUIRED_SUPER_OBJECT_CATEGORY", category.get().getName())
+                            new ImmutablePair<>("SUPER_OBJECT_ID", superObjectId),
+                            new ImmutablePair<>("SUPER_OBJECT_CATEGORY", superObject.category().getName()),
+                            new ImmutablePair<>("REQUIRED_SUPER_OBJECT_CATEGORY", category.get().getName())
                     ), source)), superObjectId, 0);
         }
         if (onlyGiveable && !(superObject instanceof Giveable)) {
             throw new ArgumentParseException(GWMLibraryUtils.joinText(language.
                     getTranslation("SAVED_SUPER_OBJECT_IS_NOT_GIVEABLE",
-                            new Pair<>("SUPER_OBJECT_ID", superObjectId),
+                            new ImmutablePair<>("SUPER_OBJECT_ID", superObjectId),
                             source)), superObjectId, 0);
         }
         if (type.isPresent() && !type.get().equals(superObject.type())) {
             throw new ArgumentParseException(GWMLibraryUtils.joinText(language.
                     getTranslation("SAVED_SUPER_OBJECT_IS_NOT_OF_REQUIRED_TYPE", Arrays.asList(
-                            new Pair<>("SUPER_OBJECT_ID", superObjectId),
-                            new Pair<>("SUPER_OBJECT_TYPE", superObject.type()),
-                            new Pair<>("REQUIRED_SUPER_OBJECT_TYPE", type.get())
+                            new ImmutablePair<>("SUPER_OBJECT_ID", superObjectId),
+                            new ImmutablePair<>("SUPER_OBJECT_TYPE", superObject.type()),
+                            new ImmutablePair<>("REQUIRED_SUPER_OBJECT_TYPE", type.get())
                     ), source)), superObjectId, 0);
         }
         return superObject;

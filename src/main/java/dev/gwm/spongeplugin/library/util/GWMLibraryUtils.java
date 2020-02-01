@@ -5,6 +5,7 @@ import com.flowpowered.math.vector.Vector3i;
 import com.google.common.reflect.TypeToken;
 import de.randombyte.holograms.api.HologramsService;
 import dev.gwm.spongeplugin.library.GWMLibrary;
+import me.rojo8399.placeholderapi.PlaceholderService;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -37,7 +38,6 @@ import org.spongepowered.api.world.World;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class GWMLibraryUtils {
 
@@ -501,25 +501,22 @@ public final class GWMLibraryUtils {
         return builder.toString();
     }
 
-    //I suspect that this is not how one is supposed to program in functional style, is it?..
     public static List<Text> getMessage(CommandSource source, Optional<List<String>> custom,
                                         Language language, String defaultMessagePath, List<Map.Entry<String, ?>> entries) {
-        return custom.
-                map(Collection::stream).
-                map(customMessage -> {
-                    Stream<Map.Entry<String, ? >> escapedEntries = entries.
-                            stream().
-                            map(entry -> new Pair<>("%" + entry.getKey() + "%", entry.getValue()));
-                    return customMessage.
-                            map(string -> escapedEntries.
-                                    reduce("", (s, e) -> s.replace(e.getKey(), e.getValue().toString()), String::concat));
+        return custom.map(strings -> strings.stream().
+                map(string -> entries.stream().reduce(string, (s, e) ->
+                        s.replace("%" + e.getKey() + "%", e.getValue().toString()), String::concat)).
+                map(TextSerializers.FORMATTING_CODE::deserialize).
+                map(string -> {
+                    //Using functional style here with map and orElse results in NoClassDefFoundError
+                    Optional<PlaceholderService> optionalPlaceholderService = GWMLibrary.getInstance().getPlaceholderService();
+                    if (optionalPlaceholderService.isPresent()) {
+                        return optionalPlaceholderService.get().replacePlaceholders(string, source, null);
+                    } else {
+                        return string;
+                    }
                 }).
-                map(customMessage -> customMessage.map(TextSerializers.FORMATTING_CODE::deserialize)).
-                map(customMessage -> GWMLibrary.getInstance().getPlaceholderService().
-                        map(placeholderService -> customMessage.
-                                map(text -> placeholderService.replacePlaceholders(text, source, null))).
-                        orElse(customMessage)).
-                map(customMessage -> customMessage.collect(Collectors.toList())).
+                collect(Collectors.toList())).
                 orElse(language.getTranslation(defaultMessagePath, entries, source));
     }
 }

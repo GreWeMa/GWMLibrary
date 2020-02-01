@@ -14,14 +14,16 @@ import dev.gwm.spongeplugin.library.util.service.SuperObjectServiceImpl;
 import me.rojo8399.placeholderapi.PlaceholderService;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.slf4j.Logger;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.asset.AssetManager;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.game.GameReloadEvent;
-import org.spongepowered.api.event.game.state.*;
+import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartingServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -37,7 +39,7 @@ import java.util.Set;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "2.5.2",
+        version = "2.5.3",
         description = "Library with Super Objects and other utilities",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -49,7 +51,7 @@ import java.util.Set;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(2, 5, 2);
+    public static final Version VERSION = new Version(2, 5, 3);
 
     private static GWMLibrary instance = null;
 
@@ -60,24 +62,24 @@ public final class GWMLibrary extends SpongePlugin {
         return instance;
     }
 
-    @Inject
-    private Logger logger;
+    private final Game game;
+    private final Cause cause;
 
-    @Inject
-    private PluginContainer container;
+    private final Logger logger;
+    private final PluginContainer container;
 
-    @Inject
-    @ConfigDir(sharedRoot = false)
-    private File configDirectory;
+    private final File configDirectory;
 
-    private Cause cause;
+    private final Config config;
+    private final Config languageConfig;
+    private final Config savedSuperObjectsConfig;
+    private final Config savedItemsConfig;
 
-    private Config config;
-    private Config languageConfig;
-    private Config savedSuperObjectsConfig;
-    private Config savedItemsConfig;
+    private final Language language;
 
-    private Language language;
+    private boolean logRegisteredCategories = true;
+    private boolean logRegisteredIdentifiers = true;
+    private boolean logLoadedSavedSuperObjects = true;
 
     private Optional<EconomyService> economyService = Optional.empty();
     private Optional<HologramsService> hologramsService = Optional.empty();
@@ -85,32 +87,43 @@ public final class GWMLibrary extends SpongePlugin {
     private Optional<ChunkTicketManager> chunkTicketManager = Optional.empty();
     private SuperObjectServiceImpl superObjectService;
 
-    private boolean logRegisteredCategories = true;
-    private boolean logRegisteredIdentifiers = true;
-    private boolean logLoadedSavedSuperObjects = true;
-
-    @Listener
-    public void onConstruction(GameConstructionEvent event) {
-        instance = this;
+    @Inject
+    public GWMLibrary(Game game,
+                      Logger logger,
+                      PluginContainer container,
+                      @ConfigDir(sharedRoot = false) File configDirectory) {
+        GWMLibrary.instance = this;
+        this.game = game;
+        cause = Cause.of(EventContext.empty(), container);
+        this.logger = logger;
+        this.container = container;
+        this.configDirectory = configDirectory;
+        if (!configDirectory.exists()) {
+            logger.info("Config directory does not exist! Trying to create it...");
+            if (configDirectory.mkdirs()) {
+                logger.info("Config directory successfully created!");
+            } else {
+                logger.error("Failed to create config directory!");
+            }
+        }
+        config = new Config.Builder(this, new File(configDirectory, "config.conf")).
+                loadDefaults("config.conf").
+                build();
+        languageConfig = new Config.Builder(this, new File(configDirectory, "language.conf")).
+                loadDefaults(getDefaultTranslationPath()).
+                build();
+        savedSuperObjectsConfig = new Config.Builder(this, new File(configDirectory, "saved_super_objects.conf")).
+                loadDefaults("language.saved_super_objects").
+                build();
+        savedItemsConfig = new Config.Builder(this, new File(configDirectory, "saved_items.conf")).
+                build();
+        language = new Language(this);
+        logger.info("Construction completed!");
     }
 
     @Listener
     public void onPreInitialization(GamePreInitializationEvent event) {
-        if (!configDirectory.exists()) {
-            configDirectory.mkdirs();
-        }
-        cause = Cause.of(EventContext.empty(), container);
-        AssetManager assetManager = Sponge.getAssetManager();
-        config = new Config(this, new File(configDirectory, "config.conf"),
-                assetManager.getAsset(this, "config.conf"), true, false);
-        languageConfig = new Config(this, new File(configDirectory, "language.conf"),
-                getDefaultTranslation(assetManager), true, false);
-        savedSuperObjectsConfig = new Config(this, new File(configDirectory, "saved_super_objects.conf"),
-                assetManager.getAsset(this, "saved_super_objects.conf"), true, false);
-        savedItemsConfig = new Config(this, new File(configDirectory, "saved_items.conf"),
-                assetManager.getAsset(this, "saved_items.conf"), true, false);
         loadConfigValues();
-        language = new Language(this);
         GWMLibraryCommandUtils.registerCommands(this);
         initializeSuperObjectsService();
         logger.info("PreInitialization completed!");
@@ -128,7 +141,7 @@ public final class GWMLibrary extends SpongePlugin {
     @Listener
     public void onStartingServer(GameStartingServerEvent event) {
         loadSavedSuperObjects();
-        Sponge.getEventManager().post(new SuperObjectsRegistrationEventImpl());
+        game.getEventManager().post(new SuperObjectsRegistrationEventImpl());
         logger.info("StartingServer completed!");
     }
 
@@ -141,7 +154,6 @@ public final class GWMLibrary extends SpongePlugin {
     @Listener
     public void onStopping(GameStoppingServerEvent event) {
         superObjectService.shutdownSavedSuperObjects();
-        save();
         logger.info("Stopping completed!");
     }
 
@@ -173,7 +185,7 @@ public final class GWMLibrary extends SpongePlugin {
     private void initializeSuperObjectsService() {
         SuperObjectCategoriesRegistrationEventImpl categoriesRegistrationEvent = new SuperObjectCategoriesRegistrationEventImpl();
         categoriesRegistrationEvent.register(GWMLibrarySuperObjectCategories.RANDOM_MANAGER);
-        Sponge.getEventManager().post(categoriesRegistrationEvent);
+        game.getEventManager().post(categoriesRegistrationEvent);
         Set<SuperObjectCategory> categories = categoriesRegistrationEvent.getCategories();
         if (logRegisteredCategories) {
             categories.forEach(category -> logger.info("Registered category \"" + category + "\""));
@@ -188,7 +200,7 @@ public final class GWMLibrary extends SpongePlugin {
         identifiersRegistrationEvent.register(
                 new SuperObjectIdentifier<>(GWMLibrarySuperObjectCategories.RANDOM_MANAGER, AbsoluteRandomManager.TYPE),
                 AbsoluteRandomManager.class);
-        Sponge.getEventManager().post(identifiersRegistrationEvent);
+        game.getEventManager().post(identifiersRegistrationEvent);
         Map<SuperObjectIdentifier, Class<? extends SuperObject>> classes = identifiersRegistrationEvent.getClasses();
         if (logRegisteredIdentifiers) {
             classes.forEach((identifier, value) -> {
@@ -198,7 +210,7 @@ public final class GWMLibrary extends SpongePlugin {
             });
         }
         superObjectService = new SuperObjectServiceImpl(categories, classes);
-        Sponge.getServiceManager().setProvider(this, SuperObjectService.class, superObjectService);
+        game.getServiceManager().setProvider(this, SuperObjectService.class, superObjectService);
     }
 
     private void loadSavedSuperObjects() {
@@ -221,7 +233,7 @@ public final class GWMLibrary extends SpongePlugin {
     }
 
     private boolean loadEconomyService() {
-        economyService = Sponge.getServiceManager().provide(EconomyService.class);
+        economyService = game.getServiceManager().provide(EconomyService.class);
         if (economyService.isPresent()) {
             logger.info("Economy Service has been found!");
             return true;
@@ -232,7 +244,7 @@ public final class GWMLibrary extends SpongePlugin {
 
     private boolean loadHologramsService() {
         try {
-            hologramsService = Sponge.getServiceManager().provide(HologramsService.class);
+            hologramsService = game.getServiceManager().provide(HologramsService.class);
             if (hologramsService.isPresent()) {
                 logger.info("Holograms Service has been found!");
                 return true;
@@ -244,7 +256,7 @@ public final class GWMLibrary extends SpongePlugin {
 
     private boolean loadPlaceholderService() {
         try {
-            placeholderService = Sponge.getServiceManager().provide(PlaceholderService.class);
+            placeholderService = game.getServiceManager().provide(PlaceholderService.class);
             if (placeholderService.isPresent()) {
                 logger.info("Placeholder Service has been found!");
                 return true;
@@ -255,7 +267,7 @@ public final class GWMLibrary extends SpongePlugin {
     }
 
     private boolean loadChunkTicketManager() {
-        chunkTicketManager = Sponge.getServiceManager().provide(ChunkTicketManager.class);
+        chunkTicketManager = game.getServiceManager().provide(ChunkTicketManager.class);
         if (chunkTicketManager.isPresent()) {
             logger.info("Chunk Ticket Manager has been found!");
             return true;

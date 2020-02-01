@@ -5,9 +5,6 @@ import dev.gwm.spongeplugin.library.GWMLibrary;
 import me.rojo8399.placeholderapi.PlaceholderService;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.asset.Asset;
-import org.spongepowered.api.asset.AssetManager;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -28,22 +25,17 @@ public class Language {
     private static final String KEY = "%%%s%%";
 
     private final SpongePlugin plugin;
-    private final Optional<ConfigurationNode> defaultNode;
+    private final ConfigurationNode defaultNode;
 
     public Language(SpongePlugin plugin) {
         this.plugin = plugin;
         try {
-            AssetManager assetManager = Sponge.getAssetManager();
-            Optional<Asset> optionalAsset = plugin.getDefaultTranslation(assetManager);
-            if (optionalAsset.isPresent()) {
-                defaultNode = Optional.of(HoconConfigurationLoader.builder().
-                        setSource(() -> new BufferedReader(new InputStreamReader(optionalAsset.get().getUrl().openStream()))).
-                        build().
-                        load());
-            } else {
-                defaultNode = Optional.empty();
-                GWMLibrary.getInstance().getLogger().warn("Plugin \"" + plugin.getContainer().getId() + "\" does not have default translation asset!");
-            }
+            String path = "/assets/" + plugin.getContainer().getId() + "/" + plugin.getDefaultTranslationPath();
+            BufferedReader source = new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream(path)));
+            defaultNode = HoconConfigurationLoader.builder().
+                    setSource(() -> source).
+                    build().
+                    load();
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize Language!", e);
         }
@@ -138,16 +130,12 @@ public class Language {
     private ConfigurationNode getAndCheckNode(String path) {
         ConfigurationNode node = plugin.getLanguageConfig().getNode(path);
         if (node.isVirtual()) {
-            if (defaultNode.isPresent()) {
-                node = defaultNode.get().getNode(path);
-                if (node.isVirtual()) {
-                    throw new IllegalArgumentException("Path \"" + path + "\" does not exist in the config!");
-                } else {
-                    plugin.getLogger().warn("Path \"" + path + "\" does not exist in the config! Using the embedded config!");
-                    return node;
-                }
+            node = defaultNode.getNode(path);
+            if (node.isVirtual()) {
+                throw new IllegalArgumentException("Path \"" + path + "\" does not exist in the config!");
             } else {
-                throw new IllegalArgumentException("Path \"" + path + "\" does not exist in the config and there is no embedded config!");
+                plugin.getLogger().warn("Path \"" + path + "\" does not exist in the config! Using the embedded config!");
+                return node;
             }
         } else {
             return node;

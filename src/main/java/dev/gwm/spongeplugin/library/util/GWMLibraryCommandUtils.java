@@ -22,11 +22,6 @@ public class GWMLibraryCommandUtils {
                 description(Text.of("Reload the plugin")).
                 executor(new ReloadCommand(language)).
                 build();
-        CommandSpec saveCommand = CommandSpec.builder().
-                permission("gwm_library.command.save").
-                description(Text.of("Save the plugin's configs")).
-                executor(new SaveCommand(language)).
-                build();
         CommandSpec saveItemCommand = CommandSpec.builder().
                 permission("gwm_library.command.saveitem").
                 description(Text.of("Save the item in hand to the config")).
@@ -71,7 +66,6 @@ public class GWMLibraryCommandUtils {
                 description(Text.of("The basic command")).
                 child(helpCommand, "help").
                 child(reloadCommand, "reload").
-                child(saveCommand, "save").
                 child(saveItemCommand, "saveitem").
                 child(buyCommand, "buy").
                 child(giveCommand, "give").
