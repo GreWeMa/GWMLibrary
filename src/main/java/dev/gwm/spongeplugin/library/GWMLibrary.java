@@ -39,7 +39,7 @@ import java.util.Set;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "2.5.3",
+        version = "2.5.4",
         description = "Library with Super Objects and other utilities",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -51,7 +51,7 @@ import java.util.Set;
                          * Discord(GWM#2192)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(2, 5, 3);
+    public static final Version VERSION = new Version(2, 5, 4);
 
     private static GWMLibrary instance = null;
 
@@ -113,7 +113,7 @@ public final class GWMLibrary extends SpongePlugin {
                 loadDefaults(getDefaultTranslationPath()).
                 build();
         savedSuperObjectsConfig = new Config.Builder(this, new File(configDirectory, "saved_super_objects.conf")).
-                loadDefaults("language.saved_super_objects").
+                loadDefaults("saved_super_objects.conf").
                 build();
         savedItemsConfig = new Config.Builder(this, new File(configDirectory, "saved_items.conf")).
                 build();

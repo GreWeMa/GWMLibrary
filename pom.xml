@@ -6,7 +6,7 @@
 
     <groupId>dev.gwm.spongeplugin</groupId>
     <artifactId>library</artifactId>
-    <version>2.5.3</version>
+    <version>2.5.4</version>
     <name>GWMLibrary</name>
     <packaging>jar</packaging>
 
