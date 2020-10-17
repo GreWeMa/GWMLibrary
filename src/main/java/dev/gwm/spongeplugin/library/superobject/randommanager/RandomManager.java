@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface RandomManager<T extends Randomable> extends SuperObject {
 
-    //R's getChildren() method should return List<R>
-    //iterable should be non-empty
+    //R's getChildren() method must return List<R>
+    //randomables must be non-empty
     <R extends T> R choose(List<R> randomables, @Nullable Subject subject, boolean fake);
 
     default <R extends T> R choose(List<R> randomables, boolean fake) {
