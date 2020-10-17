@@ -9,8 +9,8 @@ public interface Randomable {
         return false;
     }
 
-    //Sub-classes have to return a List of themselves their sub-classes.
-    //Example: getChildren()'s return type of a class C should be List<? extends C>
+    //Sub-classes must return a List of their own sub-classes.
+    //Example: getChildren()'s return type of a class C must be List<? extends C>
     default List<? extends Randomable> getChildren() {
         return Collections.emptyList();
     }
