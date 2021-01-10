@@ -47,8 +47,7 @@ import java.util.Set;
         },
         authors = {"GWM"/* My contacts:
                          * E-Mail(nazark@tutanota.com),
-                         * Telegram(@grewema),
-                         * Discord(GWM#2192)*/})
+                         * Telegram(@grewema)*/})
 public final class GWMLibrary extends SpongePlugin {
 
     public static final Version VERSION = new Version(2, 5, 4);
