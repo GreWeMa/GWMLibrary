@@ -14,7 +14,7 @@
         <repository>
             <!--spongeapi-->
             <id>sponge</id>
-            <url>http://repo.spongepowered.org/maven</url>
+            <url>https://repo.spongepowered.org/maven</url>
         </repository>
         <repository>
             <!--holograms, placeholderapi-->
