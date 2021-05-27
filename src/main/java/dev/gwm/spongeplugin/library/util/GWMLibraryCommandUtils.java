@@ -8,7 +8,10 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 
-public class GWMLibraryCommandUtils {
+public final class GWMLibraryCommandUtils {
+
+    private GWMLibraryCommandUtils() {
+    }
 
     public static void registerCommands(GWMLibrary instance) {
         Language language = instance.getLanguage();
