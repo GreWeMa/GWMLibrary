@@ -13,7 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
-public class SaveItemCommand implements CommandExecutor {
+public final class SaveItemCommand implements CommandExecutor {
 
     private final Language language;
 

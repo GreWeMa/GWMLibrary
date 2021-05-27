@@ -11,7 +11,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.text.Text;
 
-public class GiveEveryoneCommand implements CommandExecutor {
+public final class GiveEveryoneCommand implements CommandExecutor {
 
     private final Language language;
 

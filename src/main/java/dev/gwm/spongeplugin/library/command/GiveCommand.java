@@ -13,7 +13,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.Arrays;
 
-public class GiveCommand implements CommandExecutor {
+public final class GiveCommand implements CommandExecutor {
 
     private final Language language;
 

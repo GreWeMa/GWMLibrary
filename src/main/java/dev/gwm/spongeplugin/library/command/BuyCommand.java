@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-public class BuyCommand implements CommandExecutor {
+public final class BuyCommand implements CommandExecutor {
 
     private final Language language;
     private final Cause cause;
