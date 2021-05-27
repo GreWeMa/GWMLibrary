@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class SuperObjectCategoriesRegistrationEventImpl extends AbstractEvent implements SuperObjectCategoriesRegistrationEvent {
 
-    private Set<SuperObjectCategory<?>> categories = new HashSet<>();
+    private final Set<SuperObjectCategory<?>> categories = new HashSet<>();
 
     @Override
     public void register(SuperObjectCategory<?> category) {
