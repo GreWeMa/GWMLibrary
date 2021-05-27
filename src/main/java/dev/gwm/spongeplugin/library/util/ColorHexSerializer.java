@@ -18,6 +18,10 @@ public class ColorHexSerializer implements TypeSerializer<Color> {
 
     @Override
     public void serialize(@NonNull TypeToken<?> type, @Nullable Color obj, @NonNull ConfigurationNode node) throws ObjectMappingException {
-        node.setValue("#" + String.format("#%02x%02x%02x", obj.getRed(), obj.getGreen(), obj.getBlue()));
+        if (obj == null) {
+            node.setValue(null);
+        } else {
+            node.setValue("#" + String.format("#%02x%02x%02x", obj.getRed(), obj.getGreen(), obj.getBlue()));
+        }
     }
 }
