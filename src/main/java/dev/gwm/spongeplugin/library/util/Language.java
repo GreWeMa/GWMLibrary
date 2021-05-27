@@ -29,9 +29,8 @@ public class Language {
 
     public Language(SpongePlugin plugin) {
         this.plugin = plugin;
-        try {
-            String path = "/assets/" + plugin.getContainer().getId() + "/" + plugin.getDefaultTranslationPath();
-            BufferedReader source = new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream(path)));
+        String path = "/assets/" + plugin.getContainer().getId() + "/" + plugin.getDefaultTranslationPath();
+        try (BufferedReader source = new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream(path)))) {
             defaultNode = HoconConfigurationLoader.builder().
                     setSource(() -> source).
                     build().
