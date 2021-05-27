@@ -104,8 +104,8 @@ public final class Config {
 
     private TypeSerializerCollection getDefaultTypeSerializers() {
         TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-        serializers.registerType(TypeToken.of(Text.class), new TextSerializer());
-        serializers.registerType(TypeToken.of(Color.class), new ColorHexSerializer());
+        serializers.register(TypeToken.of(Text.class), new TextSerializer());
+        serializers.register(TypeToken.of(Color.class), new ColorHexSerializer());
         return serializers;
     }
 
