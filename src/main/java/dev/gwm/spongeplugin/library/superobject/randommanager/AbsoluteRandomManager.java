@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AbsoluteRandomManager extends AbstractRandomManager<AbsoluteRandomManager.AbsoluteRandomable> {
+public final class AbsoluteRandomManager extends AbstractRandomManager<AbsoluteRandomManager.AbsoluteRandomable> {
 
     public static final String TYPE = "ABSOLUTE";
 
