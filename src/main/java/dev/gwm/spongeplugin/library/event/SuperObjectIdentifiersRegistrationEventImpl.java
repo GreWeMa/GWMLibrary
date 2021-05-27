@@ -12,19 +12,19 @@ import java.util.Map;
 
 public class SuperObjectIdentifiersRegistrationEventImpl extends AbstractEvent implements SuperObjectIdentifiersRegistrationEvent {
 
-    private final Map<SuperObjectIdentifier, Class<? extends SuperObject>> classes = new HashMap<>();
+    private final Map<SuperObjectIdentifier<?>, Class<? extends SuperObject>> classes = new HashMap<>();
 
     @Override
-    public void register(SuperObjectIdentifier identifier, Class<? extends SuperObject> clazz) {
+    public void register(SuperObjectIdentifier<?> identifier, Class<? extends SuperObject> clazz) {
         classes.put(identifier, clazz);
     }
 
     @Override
-    public void unregister(SuperObjectIdentifier identifier) {
+    public void unregister(SuperObjectIdentifier<?> identifier) {
         classes.remove(identifier);
     }
 
-    public Map<SuperObjectIdentifier, Class<? extends SuperObject>> getClasses() {
+    public Map<SuperObjectIdentifier<?>, Class<? extends SuperObject>> getClasses() {
         return Collections.unmodifiableMap(classes);
     }
 

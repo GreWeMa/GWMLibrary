@@ -11,9 +11,9 @@ import java.util.function.Predicate;
 
 public interface SuperObjectService {
 
-    Set<SuperObjectCategory> getCategories();
+    Set<SuperObjectCategory<?>> getCategories();
 
-    Map<SuperObjectIdentifier, Class<? extends SuperObject>> getClasses();
+    Map<SuperObjectIdentifier<?>, Class<? extends SuperObject>> getClasses();
 
     Set<SuperObject> getCreatedSuperObjects();
 

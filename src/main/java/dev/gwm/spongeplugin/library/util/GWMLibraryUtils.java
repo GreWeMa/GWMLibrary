@@ -352,9 +352,9 @@ public final class GWMLibraryUtils {
         ItemStack item = tempNode.getValue(TypeToken.of(ItemStack.class));
         //Mega-shit-code end; Another not good code start
         if (!nbtNode.isVirtual()) {
-            LinkedHashMap nbtMap = (LinkedHashMap) nbtNode.getValue();
+            LinkedHashMap<Object, Object> nbtMap = (LinkedHashMap<Object, Object>) nbtNode.getValue();
             if (item.toContainer().get(DataQuery.of("UnsafeData")).isPresent()) {
-                Map unsafeDataMap = item.toContainer().getMap(DataQuery.of("UnsafeData")).get();
+                Map<?, ?> unsafeDataMap = item.toContainer().getMap(DataQuery.of("UnsafeData")).get();
                 nbtMap.putAll(unsafeDataMap);
             }
             DataContainer container = item.toContainer().set(DataQuery.of("UnsafeData"), nbtMap);

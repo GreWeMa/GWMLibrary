@@ -6,7 +6,7 @@ import org.spongepowered.api.event.Event;
 
 public interface SuperObjectIdentifiersRegistrationEvent extends Event {
 
-    void register(SuperObjectIdentifier identifier, Class<? extends SuperObject> clazz);
+    void register(SuperObjectIdentifier<?> identifier, Class<? extends SuperObject> clazz);
 
-    void unregister(SuperObjectIdentifier identifier);
+    void unregister(SuperObjectIdentifier<?> identifier);
 }

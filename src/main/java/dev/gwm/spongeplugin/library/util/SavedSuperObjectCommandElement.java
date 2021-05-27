@@ -21,7 +21,7 @@ public class SavedSuperObjectCommandElement extends AbstractSuperObjectCommandEl
 
     private final Language language = GWMLibrary.getInstance().getLanguage();
 
-    private final Optional<SuperObjectCategory> category;
+    private final Optional<SuperObjectCategory<?>> category;
     private final boolean onlyGiveable;
     private final Optional<String> type;
 
@@ -33,7 +33,7 @@ public class SavedSuperObjectCommandElement extends AbstractSuperObjectCommandEl
     }
 
     public SavedSuperObjectCommandElement(@Nullable Text key,
-                                          SuperObjectCategory category) {
+                                          SuperObjectCategory<?> category) {
         super(key);
         this.category = Optional.of(category);
         onlyGiveable = false;
@@ -49,7 +49,7 @@ public class SavedSuperObjectCommandElement extends AbstractSuperObjectCommandEl
     }
 
     public SavedSuperObjectCommandElement(@Nullable Text key,
-                                          SuperObjectCategory category, boolean onlyGiveable) {
+                                          SuperObjectCategory<?> category, boolean onlyGiveable) {
         super(key);
         this.category = Optional.of(category);
         this.onlyGiveable = onlyGiveable;
@@ -57,7 +57,7 @@ public class SavedSuperObjectCommandElement extends AbstractSuperObjectCommandEl
     }
 
     public SavedSuperObjectCommandElement(@Nullable Text key,
-                                          Optional<SuperObjectCategory> category, boolean onlyGiveable, Optional<String> type) {
+                                          Optional<SuperObjectCategory<?>> category, boolean onlyGiveable, Optional<String> type) {
         super(key);
         this.category = category;
         this.onlyGiveable = onlyGiveable;

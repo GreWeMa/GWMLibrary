@@ -16,14 +16,14 @@ public final class SuperObjectServiceImpl implements SuperObjectService {
 
     private static final String SAVED_SUPER_OBJECT_TYPE = "SAVED";
 
-    private final Set<SuperObjectCategory> categories;
-    private final Map<SuperObjectIdentifier, Class<? extends SuperObject>> classes;
+    private final Set<SuperObjectCategory<?>> categories;
+    private final Map<SuperObjectIdentifier<?>, Class<? extends SuperObject>> classes;
 
     private Set<SuperObject> createdSuperObjects;
     private Set<SuperObject> savedSuperObjects;
 
-    public SuperObjectServiceImpl(Set<SuperObjectCategory> categories,
-                                  Map<SuperObjectIdentifier, Class<? extends SuperObject>> classes) {
+    public SuperObjectServiceImpl(Set<SuperObjectCategory<?>> categories,
+                                  Map<SuperObjectIdentifier<?>, Class<? extends SuperObject>> classes) {
         this.categories = Collections.unmodifiableSet(categories);
         this.classes = Collections.unmodifiableMap(classes);
         createdSuperObjects = new HashSet<>();
@@ -31,12 +31,12 @@ public final class SuperObjectServiceImpl implements SuperObjectService {
     }
 
     @Override
-    public Set<SuperObjectCategory> getCategories() {
+    public Set<SuperObjectCategory<?>> getCategories() {
         return categories;
     }
 
     @Override
-    public Map<SuperObjectIdentifier, Class<? extends SuperObject>> getClasses() {
+    public Map<SuperObjectIdentifier<?>, Class<? extends SuperObject>> getClasses() {
         return classes;
     }
 
@@ -57,7 +57,7 @@ public final class SuperObjectServiceImpl implements SuperObjectService {
         if (!typeNode.isVirtual()) {
             type = typeNode.getString();
         } else {
-            Set<SuperObjectIdentifier> identifiersSet = classes.keySet().
+            Set<SuperObjectIdentifier<?>> identifiersSet = classes.keySet().
                     stream().
                     filter(identifier -> identifier.getCategory().equals(category)).
                     collect(Collectors.toSet());
@@ -80,7 +80,7 @@ public final class SuperObjectServiceImpl implements SuperObjectService {
                 throw new RuntimeException("Failed to create a Super Object (SSO casting exception)!", e);
             }
         }
-        SuperObjectIdentifier identifier = new SuperObjectIdentifier<>(category, type);
+        SuperObjectIdentifier<?> identifier = new SuperObjectIdentifier<>(category, type);
         if (!classes.containsKey(identifier)) {
             throw new RuntimeException("Identifier \"" + identifier + "\" is not valid!");
         }

@@ -11,19 +11,19 @@ import java.util.Set;
 
 public class SuperObjectCategoriesRegistrationEventImpl extends AbstractEvent implements SuperObjectCategoriesRegistrationEvent {
 
-    private Set<SuperObjectCategory> categories = new HashSet<>();
+    private Set<SuperObjectCategory<?>> categories = new HashSet<>();
 
     @Override
-    public void register(SuperObjectCategory category) {
+    public void register(SuperObjectCategory<?> category) {
         categories.add(category);
     }
 
     @Override
-    public void unregister(SuperObjectCategory category) {
+    public void unregister(SuperObjectCategory<?> category) {
         categories.remove(category);
     }
 
-    public Set<SuperObjectCategory> getCategories() {
+    public Set<SuperObjectCategory<?>> getCategories() {
         return Collections.unmodifiableSet(categories);
     }
 

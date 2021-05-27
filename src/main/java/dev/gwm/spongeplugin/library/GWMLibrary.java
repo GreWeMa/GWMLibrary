@@ -185,7 +185,7 @@ public final class GWMLibrary extends SpongePlugin {
         SuperObjectCategoriesRegistrationEventImpl categoriesRegistrationEvent = new SuperObjectCategoriesRegistrationEventImpl();
         categoriesRegistrationEvent.register(GWMLibrarySuperObjectCategories.RANDOM_MANAGER);
         game.getEventManager().post(categoriesRegistrationEvent);
-        Set<SuperObjectCategory> categories = categoriesRegistrationEvent.getCategories();
+        Set<SuperObjectCategory<?>> categories = categoriesRegistrationEvent.getCategories();
         if (logRegisteredCategories) {
             categories.forEach(category -> logger.info("Registered category \"" + category + "\""));
         }
@@ -200,7 +200,7 @@ public final class GWMLibrary extends SpongePlugin {
                 new SuperObjectIdentifier<>(GWMLibrarySuperObjectCategories.RANDOM_MANAGER, AbsoluteRandomManager.TYPE),
                 AbsoluteRandomManager.class);
         game.getEventManager().post(identifiersRegistrationEvent);
-        Map<SuperObjectIdentifier, Class<? extends SuperObject>> classes = identifiersRegistrationEvent.getClasses();
+        Map<SuperObjectIdentifier<?>, Class<? extends SuperObject>> classes = identifiersRegistrationEvent.getClasses();
         if (logRegisteredIdentifiers) {
             classes.forEach((identifier, value) -> {
                 String category = identifier.getCategory().getName();

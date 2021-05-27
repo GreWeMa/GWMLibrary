@@ -5,7 +5,7 @@ import org.spongepowered.api.event.Event;
 
 public interface SuperObjectCategoriesRegistrationEvent extends Event {
 
-    void register(SuperObjectCategory category);
+    void register(SuperObjectCategory<?> category);
 
-    void unregister(SuperObjectCategory category);
+    void unregister(SuperObjectCategory<?> category);
 }
