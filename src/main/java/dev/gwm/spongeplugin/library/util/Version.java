@@ -96,6 +96,6 @@ public class Version implements Comparable<Version> {
     }
 
     public int[] getArray() {
-        return array;
+        return array.clone();
     }
 }
