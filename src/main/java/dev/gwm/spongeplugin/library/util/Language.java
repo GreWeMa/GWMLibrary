@@ -11,6 +11,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class Language {
     public Language(SpongePlugin plugin) {
         this.plugin = plugin;
         String path = "/assets/" + plugin.getContainer().getId() + "/" + plugin.getDefaultTranslationPath();
-        try (BufferedReader source = new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream(path)))) {
+        try (BufferedReader source = new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream(path), StandardCharsets.UTF_8))) {
             defaultNode = HoconConfigurationLoader.builder().
                     setSource(() -> source).
                     build().

@@ -12,6 +12,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Color;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -92,7 +94,7 @@ public final class Config {
         //https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Reader.html#transferTo(java.io.Writer)
         source.ifPresent(callable -> {
             try (BufferedReader reader = callable.get();
-                 BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                 BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
                 while (reader.ready()) {
                     writer.write(reader.read());
                 }
@@ -166,7 +168,7 @@ public final class Config {
         public Builder loadDefaults(String name) {
             String path = "/assets/" + plugin.getContainer().getId() + "/" + name;
             this.defaults = Optional.of(() ->
-                    new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream(path))));
+                    new BufferedReader(new InputStreamReader(plugin.getClass().getResourceAsStream(path), StandardCharsets.UTF_8)));
             return this;
         }
     }
