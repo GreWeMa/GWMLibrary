@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SuperObjectCategoriesRegistrationEventImpl extends AbstractEvent implements SuperObjectCategoriesRegistrationEvent {
+public final class SuperObjectCategoriesRegistrationEventImpl extends AbstractEvent implements SuperObjectCategoriesRegistrationEvent {
 
     private final Set<SuperObjectCategory<?>> categories = new HashSet<>();
 

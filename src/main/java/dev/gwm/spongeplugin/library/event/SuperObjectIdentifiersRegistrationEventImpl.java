@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SuperObjectIdentifiersRegistrationEventImpl extends AbstractEvent implements SuperObjectIdentifiersRegistrationEvent {
+public final class SuperObjectIdentifiersRegistrationEventImpl extends AbstractEvent implements SuperObjectIdentifiersRegistrationEvent {
 
     private final Map<SuperObjectIdentifier<?>, Class<? extends SuperObject>> classes = new HashMap<>();
 
