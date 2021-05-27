@@ -1,3 +1,6 @@
+VERSION 2.5.6
+* Minor update with code refactoring
+
 VERSION 2.5.5
 * Fix bug with negative amount in "buy" command
 

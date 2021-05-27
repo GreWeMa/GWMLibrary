@@ -39,7 +39,7 @@ import java.util.Set;
 @Plugin(
         id = "gwm_library",
         name = "GWMLibrary",
-        version = "2.5.5",
+        version = "2.5.6",
         description = "Library with Super Objects and other utilities",
         dependencies = {
                 @Dependency(id = "holograms", optional = true),
@@ -50,7 +50,7 @@ import java.util.Set;
                          * Telegram(@gwmdev)*/})
 public final class GWMLibrary extends SpongePlugin {
 
-    public static final Version VERSION = new Version(2, 5, 5);
+    public static final Version VERSION = new Version(2, 5, 6);
 
     private static GWMLibrary instance = null;
 
